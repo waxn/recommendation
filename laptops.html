@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<body>
+<head>
+<title>Phone Finder</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: none;
+    }
+    body {
+        background-color: darkslategray;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 50px;
+    }
+    h1 {
+        color: orange;
+    }
+    p {
+        color: orange;
+    }
+    #submit {
+        display: inline-block;
+        margin: 15px;
+        padding: 15px 30px;
+        font-size: 23px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: bold;
+        color: darkslategray;
+        background-color: orange;
+        text-decoration: none;
+        border-radius: 10px;
+    }
+    #submit:hover {
+        background-color: darkorange;
+        font-size: 25px;
+    }
+    #prices {
+        background-color: darkslategray;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 0 5px rgba(45, 0, 0, 0.5);
+    }
+    #pricetitle {
+        color: orange;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    #size {
+        background-color: darkslategray;
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 0 5px rgba(45, 0, 0, 0.5);
+    }
+    #sizetext {
+        color: orange;
+        font-size: 20px;
+        font-weight: bold;
+    }
+   #OSTitle {
+        color: orange;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+
+
+</style>
+</head>
+
+<h1>You want a laptop? I got you!</h1>
+<p>Just check some boxes and I will find the best laptop for you!</p>
+<div id="price">
+<p id="pricetitle">Price Range (Choose One)</p>
+<form action="laptopsrec.html" method="post">
+<label for="p4">$400-500</label><br>
+<input type="checkbox" id="p5" name="p5" value="$500-600">
+<label for="p5">$500-600</label><br>
+<input type="checkbox" id="p6" name="p6" value="$600-700">
+<label for="p6">$600-700</label><br>
+<input type="checkbox" id="p7" name="p7" value="$700-800">
+<label for="p7">$700-800</label><br>
+<input type="checkbox" id="p8" name="p8" value="$800-900">
+<label for="p8">$800-900</label><br>
+<input type="checkbox" id="p9" name="p9" value="$900-1000">
+<label for="p9">$900-1000</label><br>
+<input type="checkbox" id="p10" name="p10" value="$1000-1100">
+<label for="p10">$1000-1100</label><br>
+<input type="checkbox" id="p11" name="p11" value="$1100-1200">
+<label for="p11">$1100-1200</label><br>
+<input type="checkbox" id="p12" name="p12" value="Over $1200">
+<label for="p12">Over $1200</label><br>
+</div>
+<div id="size">
+<p id="sizetext">Size (Choose One)</p>
+<input type="checkbox" id="s1" name="s1" value="less than 6.5 inches">
+<label for="s1">12 Inch</label><br>
+<input type="checkbox" id="s2" name="s2" value="over 6.5 inches">
+<label for="s2">13 Inch</label><br>
+<input type="checkbox" id="s3" name="s3" value="14 Inch">
+<label for="s3">14 Inch</label><br>
+<input type="checkbox" id="s4" name="s4" value="16 Inch">
+<label for="s4">16 Inch</label><br>
+<input type="checkbox" id="s5" name="s5" value="Huge">
+<label for="s5">Huge</label><br>
+</div>
+<form action="/laptopsrec.html" method="post">
+    <p>
+      <label for="OS" name="OSTitle">OS</label>
+    </p>
+    <p>
+      <label for="Android">Android</label>
+      <input type="checkbox" id="Android" name="Android" />
+    </p>
+    <p>
+      <label for="msg">Message:</label>
+      <textarea id="msg" name="user_message"></textarea>
+    </p>
+  </form>
+  
+</div>
+</div>
+<div id="featurestext">
+<p>Other Features (Choose Multiple)</p>
+</div>
+<div id="features">
+<input type="checkbox" id="f1" name="f1" value="Telephoto Camera">
+<label for="f1">Telephoto Camera</label><br>
+<input type="checkbox" id="f2" name="f2" value="Wireless Charging">
+<label for="f2">Wireless Charging</label><br>
+<input type="checkbox" id="f3" name="f3" value="eSIM">
+<label for="f3">eSIM</label><br>
+</div>
+<input type="button" value="Submit" id="submit" name="submit" onclick="submitForm()">
+
+<script>
+function submitForm() {
+    var priceRange = [];
+    var size = [];
+    var os = [];
+    var features = [];
+
+    // Get selected price range
+    for (var i = 1; i <= 12; i++) {
+        if (document.getElementById('p' + i).checked) {
+            priceRange.push(document.getElementById('p' + i).value);
+        }
+    }
+
+    // Get selected size
+    for (var i = 1; i <= 2; i++) {
+        if (document.getElementById('s' + i).checked) {
+            size.push(document.getElementById('s' + i).value);
+        }
+    }
+
+    // Get selected operating system
+    for (var i = 1; i <= 2; i++) {
+        if (document.getElementById('os' + i).checked) {
+            os.push(document.getElementById('os' + i).value);
+        }
+    }
+
+    // Get selected features
+    for (var i = 1; i <= 3; i++) {
+        if (document.getElementById('f' + i).checked) {
+            features.push(document.getElementById('f' + i).value);
+        }
+    }
+
+    // Display the selected options
+    alert("Selected Price Range: " + priceRange.join(", ") +
+          "\nSelected Size: " + size.join(", ") +
+          "\nSelected Operating System: " + os.join(", ") +
+          "\nSelected Features: " + features.join(", "));
+}
+</script>
+
+</body>
+</html>
