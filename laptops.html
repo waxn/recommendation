@@ -2,6 +2,7 @@
 <body>
 <head>
 <title>Phone Finder</title>
+<link rel="icon" sizes="180x180" href="CMF-Phone-2-Pro-Black-removebg-preview.png">
 <style>
     * {
         margin: 0;
@@ -12,13 +13,18 @@
         background-color: darkslategray;
         font-family: Arial, sans-serif;
         text-align: center;
-        padding: 50px;
+        padding: 5%;
     }
     h1 {
         color: orange;
+        padding: 10px;
+        padding-bottom: 30px;
+        font-weight: bold;
+        font-size: 50px;
     }
     p {
         color: orange;
+        padding-bottom: 25px;
     }
     #submit {
         display: inline-block;
@@ -46,23 +52,32 @@
         color: orange;
         font-size: 20px;
         font-weight: bold;
+        position: center;
+        padding-top: 15px;
     }
-    #size {
-        background-color: darkslategray;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 0 5px rgba(45, 0, 0, 0.5);
-    }
+
     #sizetext {
         color: orange;
         font-size: 20px;
         font-weight: bold;
     }
-   #OSTitle {
-        color: orange;
-        font-size: 20px;
-        font-weight: bold;
+    #form-container {
+        max-width: 400px; /* adjust width as needed */
+        margin: 0 auto;
+        padding: 20px;
+        padding-top: 0px;
+        border: 2px solid #444;
+        border-radius: 10px;
+        background-color: #275050;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
+    #form-container:hover {
+        background-color: darkslategray;
+        padding: 25px;
+        padding-top: 5px;
+        box-shadow: 0 0 15px rgba(45, 0, 0, 0.5)
+    }
+
 
 
 
@@ -71,6 +86,7 @@
 
 <h1>You want a laptop? I got you!</h1>
 <p>Just check some boxes and I will find the best laptop for you!</p>
+<div id="form-container">
 <div id="price">
 <p id="pricetitle">Price Range (Choose One)</p>
 <form action="laptopsrec.html" method="post">
@@ -104,23 +120,7 @@
 <label for="s4">16 Inch</label><br>
 <input type="checkbox" id="s5" name="s5" value="Huge">
 <label for="s5">Huge</label><br>
-</div>
-<form action="/laptopsrec.html" method="post">
-    <p>
-      <label for="OS" name="OSTitle">OS</label>
-    </p>
-    <p>
-      <label for="Android">Android</label>
-      <input type="checkbox" id="Android" name="Android" />
-    </p>
-    <p>
-      <label for="msg">Message:</label>
-      <textarea id="msg" name="user_message"></textarea>
-    </p>
-  </form>
-  
-</div>
-</div>
+</div>  
 <div id="featurestext">
 <p>Other Features (Choose Multiple)</p>
 </div>
@@ -133,6 +133,7 @@
 <label for="f3">eSIM</label><br>
 </div>
 <input type="button" value="Submit" id="submit" name="submit" onclick="submitForm()">
+</div>
 
 <script>
 function submitForm() {
