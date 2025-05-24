@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <body>
 <head>
-<title>Phone Finder</title>
-<link rel="icon" sizes="240x240" href="CMF-Phone-2-Pro-Black-removebg-preview.png">
+<title>Laptop Finder</title>
+<link rel="icon" sizes="180x180" href="generic laptop.webp">
 <style>
     * {
         margin: 0;
@@ -94,28 +94,10 @@
 <p>Just check some boxes and I will find the best laptop for you!</p>
 <div id="form-container">
 <div id="price">
-<p id="pricetitle">Price Range (Choose One)</p>
+<p id="pricetitle">Budget</p>
+<p id="pricedescription">Intervals of $50</p>
 <form action="laptopsrec.html" method="post">
-<input type="checkbox" id="p1" name="p1" value="$400-500">
-<label for="p4">$400-500</label><br>
-<input type="checkbox" id="p5" name="p5" value="$500-600">
-<label for="p5">$500-600</label><br>
-<input type="checkbox" id="p6" name="p6" value="$600-700">
-<label for="p6">$600-700</label><br>
-<input type="checkbox" id="p7" name="p7" value="$700-800">
-<label for="p7">$700-800</label><br>
-<input type="checkbox" id="p8" name="p8" value="$800-900">
-<label for="p8">$800-900</label><br>
-<input type="checkbox" id="p9" name="p9" value="$900-1000">
-<label for="p9">$900-1000</label><br>
-<input type="checkbox" id="p10" name="p10" value="$1000-1100">
-<label for="p10">$1000-1100</label><br>
-<input type="checkbox" id="p11" name="p11" value="$1100-1200">
-<label for="p11">$1100-1200</label><br>
-<input type="checkbox" id="p12" name="p12" value="1200-1500">
-<label for="p12">$1200-$1500</label><br>
-<input type="checkbox" id="p12" name="p12" value="Over $1200">
-<label for="p12">Over $1200</label><br>
+<input type="number" id="p1" name="p1" value="Approx Budget" min="0" max="5000" step="50">
 </div>
 <div id="size">
 <p id="sizetext">Size (Choose One)</p>
@@ -132,12 +114,10 @@
 </div>  
 <p id="featurestext">Other Features (Choose Multiple)</p>
 <div id="features">
-<input type="checkbox" id="f1" name="f1" value="Telephoto Camera">
-<label for="f1">Telephoto Camera</label><br>
-<input type="checkbox" id="f2" name="f2" value="Wireless Charging">
-<label for="f2">Wireless Charging</label><br>
-<input type="checkbox" id="f3" name="f3" value="eSIM">
-<label for="f3">eSIM</label><br>
+<input type="checkbox" id="f1" name="f1" value="Touchscreen">
+<label for="f1">Touchscreen</label><br>
+<input type="checkbox" id="f2" name="f2" value="Full Keyboard">
+<label for="f2">Full Keyboard</label><br>
 </div>
 <input type="button" value="Submit" id="submit" name="submit" onclick="submitForm()">
 </div>
