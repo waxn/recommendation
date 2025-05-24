@@ -1,0 +1,9 @@
+[
+  {
+    "name": "Laptop A",
+    "price": 800,
+    "size": "14 Inch",
+    "features": ["Touchscreen", "Full Keyboard"],
+    "image": "laptopA.jpg"
+  }
+]

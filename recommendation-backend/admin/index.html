@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+</head>
+<body>
+  <h1>Admin: Add Laptop</h1>
+  <form id="laptopForm">
+    <input name="name" placeholder="Name"><br>
+    <input name="price" placeholder="Price" type="number"><br>
+    <input name="size" placeholder="Size"><br>
+    <input name="features" placeholder="Features (comma separated)"><br>
+    <input name="image" placeholder="Image URL"><br>
+    <button type="submit">Add Laptop</button>
+  </form>
+  <script>
+    document.getElementById('laptopForm').onsubmit = async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        name: form.name.value,
+        price: Number(form.price.value),
+        size: form.size.value,
+        features: form.features.value.split(',').map(f => f.trim()),
+        image: form.image.value
+      };
+      await fetch('/api/laptops', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      alert('Laptop added!');
+      form.reset();
+    }
+  </script>
+</body>
+</html>
