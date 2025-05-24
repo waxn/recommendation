@@ -2,6 +2,7 @@
 <body>
 <head>
 <title>Phone Finder</title>
+<link rel="icon" sizes="240x240" href="CMF-Phone-2-Pro-Black-removebg-preview.png">
 <style>
     * {
         margin: 0;
@@ -12,13 +13,19 @@
         background-color: darkslategray;
         font-family: Arial, sans-serif;
         text-align: center;
-        padding: 50px;
+        padding: 5%;
     }
     h1 {
         color: orange;
+        padding: 10px;
+        padding-bottom: 30px;
+        font-weight: bold;
+        font-size: 50px;
     }
     p {
         color: orange;
+        padding-bottom: 25px;
+        font-size: 20px;
     }
     #submit {
         display: inline-block;
@@ -46,19 +53,39 @@
         color: orange;
         font-size: 20px;
         font-weight: bold;
+        position: center;
+        padding-top: 15px;
     }
-    #size {
-        background-color: darkslategray;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 0 5px rgba(45, 0, 0, 0.5);
-    }
+
     #sizetext {
         color: orange;
         font-size: 20px;
         font-weight: bold;
+        padding-top: 15px;
     }
-   
+    #form-container {
+        max-width: 400px; /* adjust width as needed */
+        margin: 0 auto;
+        padding: 20px;
+        padding-top: 0px;
+        border: 2px solid #444;
+        border-radius: 10px;
+        background-color: #275050;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    #form-container:hover {
+        background-color: darkslategray;
+        padding: 25px;
+        padding-top: 5px;
+        box-shadow: 0 0 15px rgba(45, 0, 0, 0.5)
+    }
+    #featurestext {
+        color: orange;
+        font-size: 20px;
+        font-weight: bold;
+        padding-top: 15px;
+    }
+
 
 
 </style>
@@ -66,15 +93,17 @@
 
 <h1>You want a phone? I got you!</h1>
 <p>Just check some boxes and I will find the best phone for you!</p>
-<div id="prices">
+<div id="form-container">
+<div id="price">
 <p id="pricetitle">Price Range (Choose One)</p>
-<input type="checkbox" id="p1" name="p1" value="$100-200">
-<label for="p1">$100-200</label><br>
-<input type="checkbox" id="p2" name="p2" value="$200-300">
-<label for="p2">$200-300</label><br>
-<input type="checkbox" id="p3" name="p3" value="$300-400">
-<label for="p3">$300-400</label><br>
-<input type="checkbox" id="p4" name="p4" value="$400-500">
+<form action="laptopsrec.html" method="post">
+<input type="checkbox" id="p1" name="p1" value="$100-$200">
+<label for="p1">$100-$200</label><br>
+<input type="checkbox" id="p2" name="p2" value="$200-$300">
+<label for="p2">$200-$300</label><br>
+<input type="checkbox" id="p3" name="p3" value="$300-$400">
+<label for="p3">$300-$400</label><br>
+<input type="checkbox" id="p1" name="p1" value="$400-500">
 <label for="p4">$400-500</label><br>
 <input type="checkbox" id="p5" name="p5" value="$500-600">
 <label for="p5">$500-600</label><br>
@@ -90,29 +119,17 @@
 <label for="p10">$1000-1100</label><br>
 <input type="checkbox" id="p11" name="p11" value="$1100-1200">
 <label for="p11">$1100-1200</label><br>
-<input type="checkbox" id="p12" name="p12" value="Over $1200">
-<label for="p12">Over $1200</label><br>
+<input type="checkbox" id="p12" name="p12" value="1200-1500">
+<label for="p12">$1200-$1500</label><br>
 </div>
 <div id="size">
 <p id="sizetext">Size (Choose One)</p>
 <input type="checkbox" id="s1" name="s1" value="less than 6.5 inches">
-<label for="s1">Less than 6.5 inches</label><br>
+<label for="s1">Less than 6.5"</label><br>
 <input type="checkbox" id="s2" name="s2" value="over 6.5 inches">
-<label for="s2">Over 6.5 inches</label><br>
-</div>
-<div id="ostext">
-<p>Operating System (Choose One)</p>
-</div>
-<div id="os">
-<input type="checkbox" id="os1" name="os1" value="Android">
-<label for="os1">Android</label><br>
-<input type="checkbox" id="os2" name="os2" value="iOS">
-<label for="os2">iOS</label><br>
-</div>
-</div>
-<div id="featurestext">
-<p>Other Features (Choose Multiple)</p>
-</div>
+<label for="s2">More than 6.5"</label><br>
+</div>  
+<p id="featurestext">Other Features (Choose Multiple)</p>
 <div id="features">
 <input type="checkbox" id="f1" name="f1" value="Telephoto Camera">
 <label for="f1">Telephoto Camera</label><br>
@@ -122,6 +139,7 @@
 <label for="f3">eSIM</label><br>
 </div>
 <input type="button" value="Submit" id="submit" name="submit" onclick="submitForm()">
+</div>
 
 <script>
 function submitForm() {
