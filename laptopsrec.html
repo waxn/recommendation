@@ -1,0 +1,103 @@
+<!DOCTYPE html> 
+<body>
+<html lang="en">
+<head>
+<title>Super Cool Phone Carrier Reccomender</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: none;
+    }
+    body {
+        background-color: darkslategray;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 50px;
+    }
+    h1 {
+        color: orange;
+    }
+    p {
+        color: orange;
+    }
+    a {
+        display: inline-block;
+        margin: 10px;
+        padding: 15px 30px;
+        font-size: 18px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: bold;
+        color: darkslategray;
+        background-color: orange;
+        text-decoration: none;
+        border-radius: 10px;
+    }
+   
+</style>
+</head>
+
+<h1>Placeholder page</h1>
+
+<script>
+
+// Example laptop database (replace with your real data)
+const laptops = [
+    {
+        name: "Laptop A",
+        price: 800,
+        size: "14 Inch",
+        features: ["Touchscreen", "Full Keyboard"],
+        image: "laptopA.jpg"
+    },
+    {
+        name: "Laptop B",
+        price: 1200,
+        size: "16 Inch",
+        features: ["Full Keyboard"],
+        image: "laptopB.jpg"
+    },
+    // Add more laptops here...
+];
+
+// Helper to get all values for a query param (e.g., size, feature)
+function getAllParams(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.getAll(param);
+}
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const budget = parseInt(urlParams.get('budget')) || 0;
+    const sizes = getAllParams('size');
+    const features = getAllParams('feature');
+
+    // Filter laptops by budget, size, and features
+    let results = laptops.filter(laptop => {
+        const fitsBudget = laptop.price <= budget;
+        const fitsSize = sizes.length === 0 || sizes.includes(laptop.size);
+        const fitsFeatures = features.every(f => laptop.features.includes(f));
+        return fitsBudget && fitsSize && fitsFeatures;
+    });
+
+    // Display results
+    const resultsDiv = document.getElementById('results');
+    if (results.length === 0) {
+        resultsDiv.innerHTML = "<p style='color:orange;'>No matching laptops found.</p>";
+    } else {
+        resultsDiv.innerHTML = results.map(laptop => `
+            <div style="background: #275050; color: orange; margin: 20px; padding: 20px; border-radius: 10px;">
+                <h2>${laptop.name}</h2>
+                <img src="${laptop.image}" alt="${laptop.name}" style="width:200px;"><br>
+                <b>Price:</b> $${laptop.price}<br>
+                <b>Size:</b> ${laptop.size}<br>
+                <b>Features:</b> ${laptop.features.join(", ")}
+            </div>
+        `).join('');
+    }
+};
+</script>
+<div id="results"></div>
+
+</body>
+<html>

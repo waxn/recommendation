@@ -54,8 +54,15 @@
         font-weight: bold;
         position: center;
         padding-top: 15px;
+        padding-bottom: 5px;
     }
-
+    #pricedescription {
+        color: orange;
+        font-size: 15px;
+        font-weight: normal;
+        padding-top: 5px;
+        padding-bottom: 10px;
+    }
     #sizetext {
         color: orange;
         font-size: 20px;
@@ -74,8 +81,8 @@
     }
     #form-container:hover {
         background-color: darkslategray;
-        padding: 25px;
-        padding-top: 5px;
+        padding: 22px;
+        padding-top: 2px;
         box-shadow: 0 0 15px rgba(45, 0, 0, 0.5)
     }
     #featurestext {
@@ -83,6 +90,20 @@
         font-size: 20px;
         font-weight: bold;
         padding-top: 15px;
+    }
+    #p1 {
+        color: orange;
+        font-size: 20px;
+        width: 30%;
+        height: 25%;
+        padding: 0px;
+        font-weight: bold;
+        padding-top: 15px;
+        background-color: darkslategray;
+        background-opacity: 0.5;
+        border-radius: 10px;
+        border-color: slategray;
+        border-width: 5px;
     }
 
 
@@ -124,44 +145,35 @@
 
 <script>
 function submitForm() {
-    var priceRange = [];
-    var size = [];
-    var os = [];
-    var features = [];
+    // Get budget value
+    var budget = document.getElementById('p1').value;
 
-    // Get selected price range
-    for (var i = 1; i <= 12; i++) {
-        if (document.getElementById('p' + i).checked) {
-            priceRange.push(document.getElementById('p' + i).value);
-        }
-    }
-
-    // Get selected size
-    for (var i = 1; i <= 2; i++) {
-        if (document.getElementById('s' + i).checked) {
-            size.push(document.getElementById('s' + i).value);
-        }
-    }
-
-    // Get selected operating system
-    for (var i = 1; i <= 2; i++) {
-        if (document.getElementById('os' + i).checked) {
-            os.push(document.getElementById('os' + i).value);
+    // Get selected sizes
+    var sizes = [];
+    for (var i = 1; i <= 5; i++) {
+        var s = document.getElementById('s' + i);
+        if (s && s.checked) {
+            sizes.push(s.value);
         }
     }
 
     // Get selected features
-    for (var i = 1; i <= 3; i++) {
-        if (document.getElementById('f' + i).checked) {
-            features.push(document.getElementById('f' + i).value);
+    var features = [];
+    for (var i = 1; i <= 2; i++) {
+        var f = document.getElementById('f' + i);
+        if (f && f.checked) {
+            features.push(f.value);
         }
     }
 
-    // Display the selected options
-    alert("Selected Price Range: " + priceRange.join(", ") +
-          "\nSelected Size: " + size.join(", ") +
-          "\nSelected Operating System: " + os.join(", ") +
-          "\nSelected Features: " + features.join(", "));
+    // Build query string
+    var params = new URLSearchParams();
+    params.append('budget', budget);
+    sizes.forEach(size => params.append('size', size));
+    features.forEach(feature => params.append('feature', feature));
+
+    // Redirect to laptopsrec.html with query parameters
+    window.location.href = 'laptopsrec.html?' + params.toString();
 }
 </script>
 
