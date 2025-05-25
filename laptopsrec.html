@@ -1,88 +1,118 @@
-<DOCTYPE html>
-<html lang="en">
-    <html>
+<!DOCTYPE html>
+<html>
 <head>
-  <title>Product Search</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.min.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    .product {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-    .product h3 {
-      margin: 0;
-    }
-    .product p {
-      margin: 5px 0;
-    }
-    .product a {
-      text-decoration: none;
-      color: blue;
-    }
-  </style>
+  <title>Laptop Recommendations</title>
 </head>
 <body>
-<h1>Product Search</h1>
-<div id="results"> Loading products...</div>
+  <h1>Laptop Recommendations</h1>
+  <div id="results">Loading...</div>
 
-<script>
-  const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-  const params = new URLSearchParams(window.location.search);
-  const price = parseFloat(params.get('price'));
-  const sizes = params.get('sizes')?.split(',') || [];
-  const features = params.get('features')?.split(',') || [];
+  <script>
+    console.log("Script loaded!");
 
-  async function fetchProducts() {
-    let query = supabase
-      .from('products')
-      .select('*')
-      .eq('category', 'laptop')
-      .lte('price', price);
+    const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Apply filters
-    if (sizes.length) {
-      query = query.in('size', sizes);
-    }
-    if (features.length) {
-      for (let feat of features) {
-        query = query.contains('features', [feat]); // assuming features is a text[] or JSONB array
+    
+    function cleanFeatures(featuresStr) {
+      let trimmed = featuresStr.trim();
+      
+      if(trimmed.startsWith('[') && trimmed.endsWith(']')) {
+        trimmed = trimmed.slice(1, -1);
       }
+      
+      trimmed = trimmed.replace(/['"]/g, '');
+      
+      return trimmed.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
     }
 
-    const { data, error } = await query;
+    async function getRecommendations() {
+      const params = new URLSearchParams(window.location.search);
+      const priceStr = params.get('price') || '9999999';
+      const price = parseFloat(priceStr);
+      
+      const sizes = params.get('sizes') ? params.get('sizes').split(',').map(s => s.trim()) : [];
+      const features = params.get('features') ? params.get('features').split(',').map(f => f.trim().toLowerCase()) : [];
+      console.log("Params:", { price, sizes, features });
 
-    const resultsDiv = document.getElementById('results');
+      let { data, error } = await supabase
+        .from('laptops')
+        .select('*')
+        .lte('price', price);
+      console.log("Raw Supabase data:", data, "Error:", error);
+      if (error) {
+        console.error("Supabase error:", error);
+        document.getElementById('results').innerText = 'Error loading products';
+        return;
+      }
+      if (!data || data.length === 0) {
+        document.getElementById('results').innerHTML = '<p style="color: red;">No products found from query.</p>';
+        return;
+      }
+      console.log("Data count before filtering:", data.length);
 
-    if (error) {
-      console.error(error);
-      resultsDiv.innerText = 'Error loading products';
-      return;
+     
+      if (sizes.length > 0) {
+        const normalizedSizes = sizes.map(s => s.toLowerCase());
+        console.log("Applying size filter. Expected sizes:", normalizedSizes);
+        data = data.filter(laptop => {
+          const laptopSize = laptop.size ? laptop.size.trim().toLowerCase() : "";
+          console.log(`Laptop "${laptop.name}" size:`, laptopSize);
+          return normalizedSizes.includes(laptopSize);
+        });
+        console.log("Data count after size filtering:", data.length);
+      }
+
+      
+      if (features.length > 0) {
+        console.log("Applying feature filter. Expected features:", features);
+        data = data.filter(laptop => {
+          console.log("Laptop:", laptop.name, "Raw features:", laptop.features);
+          let laptopFeatures;
+          try {
+            laptopFeatures = JSON.parse(laptop.features);
+            
+            if (Array.isArray(laptopFeatures)) {
+              laptopFeatures = laptopFeatures.map(f => f.trim().toLowerCase());
+            }
+          } catch {
+            
+            laptopFeatures = laptop.features ? cleanFeatures(laptop.features) : [];
+          }
+          console.log(`Laptop "${laptop.name}" normalized features:`, laptopFeatures);
+          return features.every(f => laptopFeatures.includes(f));
+        });
+        console.log("Data count after feature filtering:", data.length);
+      }
+
+      if (data.length === 0) {
+        document.getElementById('results').innerHTML = '<p style="color: red;">No products found after filtering.</p>';
+        return;
+      }
+
+      const resultsHtml = data.map(p => {
+        let featuresList;
+        try {
+          featuresList = JSON.parse(p.features).join(', ');
+        } catch {
+          featuresList = p.features || '';
+        }
+        return `<div class="product" style="color: orange; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; padding: 10px;">
+          <h2>${p.name}</h2>
+          <img src="${p['Image URL']}" alt="${p.name}" style="max-width:200px; max-height:150px; display:block; margin:0 auto 10px;">
+          <p><strong>Price:</strong> $${p.price}</p>
+          <p><strong>Size:</strong> ${p.size}</p>
+          <p><strong>Features:</strong> ${featuresList}</p>
+          <a href="${p.link}" target="_blank" style="color: lightblue;">Buy</a>
+        </div>`;
+      }).join('');
+      document.getElementById('results').innerHTML = resultsHtml;
     }
 
-    if (!data.length) {
-      resultsDiv.innerHTML = '<p>No matching laptops.</p>';
-      return;
-    }
-
-    resultsDiv.innerHTML = data.map(p =>
-      `<div class="product">
-        <h3>$${p.price}</h3>
-        <p>${JSON.stringify(p.specs)}</p>
-        <a href="${p.link}" target="_blank">Buy</a>
-      </div>`
-    ).join('');
-  }
-
-  fetchProducts();
-</script>
-
-</html>
+    document.addEventListener('DOMContentLoaded', getRecommendations);
+  </script>
 </body>
+</html>

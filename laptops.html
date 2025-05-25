@@ -1,16 +1,11 @@
 <!DOCTYPE html>
-<body>
+<html>
 <head>
-<title>Laptop Finder</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-</script>
-<link rel="icon" sizes="180x180" href="generic laptop.webp">
-<style>
-    * {
+  <title>Laptop Finder</title>
+  <link rel="icon" sizes="180x180" href="generic laptop.webp">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+        * {
         margin: 0;
         padding: 0;
         box-sizing: none;
@@ -76,7 +71,7 @@
         padding-top: 15px;
     }
     #form-container {
-        max-width: 400px; /* adjust width as needed */
+        max-width: 400px; 
         margin: 0 auto;
         padding: 20px;
         padding-top: 0px;
@@ -111,61 +106,59 @@
         border-color: slategray;
         border-width: 5px;
     }
-
-
-
-</style>
+  </style>
 </head>
 
-<h1>You want a laptop? I got you!</h1>
-<p>Just check some boxes and I will find the best laptop for you!</p>
-<div id="form-container">
+<body>
+  <h1>You want a laptop? I got you!</h1>
+  <p>Just check some boxes and I will find the best laptop for you!</p>
 
-<form id="rec-form">
+<div id="form-container">
+  <form id="rec-form">
     <input type="number" name="price" placeholder="Enter max price" required>
 
-    <input type="checkbox" name="size" value="14 Inch" id="p1">
-    <label for="p1">14 Inch</label><br>
+    <div>
+      <label><input type="checkbox" name="size" value="14 Inch">14 Inch</label><br>
+      <label><input type="checkbox" name="size" value="15 Inch">15 Inch</label><br>
+      <label><input type="checkbox" name="size" value="16 Inch">16 Inch</label><br>
+    </div>
 
-    <input type="checkbox" name="features" value="Touchscreen" id="f1">
-    <label for="f1">Touchscreen</label><br>
+    <div>
+      <label><input type="checkbox" name="features" value="Touchscreen">Touchscreen</label><br>
+      <label><input type="checkbox" name="features" value="Backlit Keyboard">Backlit Keyboard</label><br>
+      <label><input type="checkbox" name="features" value="Fingerprint Reader">Fingerprint Reader</label><br>
+    </div>
 
-    <button type="button" id="submit" >Submit</button>
-
-</form>
+    <button type="submit" id="submit">Submit</button>
+  </form>
 </div>
 
-<script>
-  document.getElementById('submit').addEventListener('click', (e) => {
-    e.preventDefault(); // prevent form from submitting normally
+<div id="results"></div>
 
-    const form = document.getElementById('rec-form');
-    const price = form.price.value;
+  <div id="results"></div>
 
-    // Get selected sizes
-    const sizes = Array.from(form.querySelectorAll('input[name="size"]:checked'))
-                        .map(cb => cb.value);
+  <script>
+    const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Get selected features
-    const features = Array.from(form.querySelectorAll('input[name="features"]:checked'))
-                          .map(cb => cb.value);
+  document.getElementById('rec-form').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    // Build query string
-    const queryParams = new URLSearchParams({
-      price,
-      sizes: sizes.join(','),
-      features: features.join(',')
-    });
+    const price = document.querySelector('input[name="price"]').value;
+ const sizes = Array.from(document.querySelectorAll('input[name="size"]:checked')).map(cb => cb.value);
+    const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(cb => cb.value);
 
-    // Redirect to results page
-    window.location.href = `laptopsrec.html?${queryParams.toString()}`;
+    const params = new URLSearchParams();
+    params.set('price', price);
+    if (sizes.length) params.set('sizes', sizes.join(','));
+    if (features.length) params.set('features', features.join(','));
+
+    window.location.href = `laptopsrec.html?${params.toString()}`;
   });
-</script>
 
-
-</script>
-
-
-
+  </script>
 </body>
 </html>
+
+
