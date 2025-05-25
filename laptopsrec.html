@@ -1,103 +1,88 @@
-<!DOCTYPE html> 
-<body>
+<DOCTYPE html>
 <html lang="en">
+    <html>
 <head>
-<title>Super Cool Phone Carrier Reccomender</title>
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: none;
-    }
+  <title>Product Search</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.min.js"></script>
+  <style>
     body {
-        background-color: darkslategray;
-        font-family: Arial, sans-serif;
-        text-align: center;
-        padding: 50px;
+      font-family: Arial, sans-serif;
+      margin: 20px;
     }
-    h1 {
-        color: orange;
+    .product {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
     }
-    p {
-        color: orange;
+    .product h3 {
+      margin: 0;
     }
-    a {
-        display: inline-block;
-        margin: 10px;
-        padding: 15px 30px;
-        font-size: 18px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-weight: bold;
-        color: darkslategray;
-        background-color: orange;
-        text-decoration: none;
-        border-radius: 10px;
+    .product p {
+      margin: 5px 0;
     }
-   
-</style>
+    .product a {
+      text-decoration: none;
+      color: blue;
+    }
+  </style>
 </head>
-
-<h1>Placeholder page</h1>
+<body>
+<h1>Product Search</h1>
+<div id="results"> Loading products...</div>
 
 <script>
+  const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Example laptop database (replace with your real data)
-const laptops = [
-    {
-        name: "Laptop A",
-        price: 800,
-        size: "14 Inch",
-        features: ["Touchscreen", "Full Keyboard"],
-        image: "laptopA.jpg"
-    },
-    {
-        name: "Laptop B",
-        price: 1200,
-        size: "16 Inch",
-        features: ["Full Keyboard"],
-        image: "laptopB.jpg"
-    },
-    // Add more laptops here...
-];
+  const params = new URLSearchParams(window.location.search);
+  const price = parseFloat(params.get('price'));
+  const sizes = params.get('sizes')?.split(',') || [];
+  const features = params.get('features')?.split(',') || [];
 
-// Helper to get all values for a query param (e.g., size, feature)
-function getAllParams(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.getAll(param);
-}
+  async function fetchProducts() {
+    let query = supabase
+      .from('products')
+      .select('*')
+      .eq('category', 'laptop')
+      .lte('price', price);
 
-window.onload = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const budget = parseInt(urlParams.get('budget')) || 0;
-    const sizes = getAllParams('size');
-    const features = getAllParams('feature');
-
-    // Filter laptops by budget, size, and features
-    let results = laptops.filter(laptop => {
-        const fitsBudget = laptop.price <= budget;
-        const fitsSize = sizes.length === 0 || sizes.includes(laptop.size);
-        const fitsFeatures = features.every(f => laptop.features.includes(f));
-        return fitsBudget && fitsSize && fitsFeatures;
-    });
-
-    // Display results
-    const resultsDiv = document.getElementById('results');
-    if (results.length === 0) {
-        resultsDiv.innerHTML = "<p style='color:orange;'>No matching laptops found.</p>";
-    } else {
-        resultsDiv.innerHTML = results.map(laptop => `
-            <div style="background: #275050; color: orange; margin: 20px; padding: 20px; border-radius: 10px;">
-                <h2>${laptop.name}</h2>
-                <img src="${laptop.image}" alt="${laptop.name}" style="width:200px;"><br>
-                <b>Price:</b> $${laptop.price}<br>
-                <b>Size:</b> ${laptop.size}<br>
-                <b>Features:</b> ${laptop.features.join(", ")}
-            </div>
-        `).join('');
+    // Apply filters
+    if (sizes.length) {
+      query = query.in('size', sizes);
     }
-};
-</script>
-<div id="results"></div>
+    if (features.length) {
+      for (let feat of features) {
+        query = query.contains('features', [feat]); // assuming features is a text[] or JSONB array
+      }
+    }
 
+    const { data, error } = await query;
+
+    const resultsDiv = document.getElementById('results');
+
+    if (error) {
+      console.error(error);
+      resultsDiv.innerText = 'Error loading products';
+      return;
+    }
+
+    if (!data.length) {
+      resultsDiv.innerHTML = '<p>No matching laptops.</p>';
+      return;
+    }
+
+    resultsDiv.innerHTML = data.map(p =>
+      `<div class="product">
+        <h3>$${p.price}</h3>
+        <p>${JSON.stringify(p.specs)}</p>
+        <a href="${p.link}" target="_blank">Buy</a>
+      </div>`
+    ).join('');
+  }
+
+  fetchProducts();
+</script>
+
+</html>
 </body>
-<html>

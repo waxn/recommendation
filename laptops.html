@@ -2,6 +2,12 @@
 <body>
 <head>
 <title>Laptop Finder</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+</script>
 <link rel="icon" sizes="180x180" href="generic laptop.webp">
 <style>
     * {
@@ -114,68 +120,52 @@
 <h1>You want a laptop? I got you!</h1>
 <p>Just check some boxes and I will find the best laptop for you!</p>
 <div id="form-container">
-<div id="price">
-<p id="pricetitle">Budget</p>
-<p id="pricedescription">Intervals of $50</p>
-<form action="laptopsrec.html" method="post">
-<input type="number" id="p1" name="p1" value="Approx Budget" min="0" max="5000" step="50">
-</div>
-<div id="size">
-<p id="sizetext">Size (Choose One)</p>
-<input type="checkbox" id="s1" name="s1" value="less than 6.5 inches">
-<label for="s1">12 Inch</label><br>
-<input type="checkbox" id="s2" name="s2" value="over 6.5 inches">
-<label for="s2">13 Inch</label><br>
-<input type="checkbox" id="s3" name="s3" value="14 Inch">
-<label for="s3">14 Inch</label><br>
-<input type="checkbox" id="s4" name="s4" value="16 Inch">
-<label for="s4">16 Inch</label><br>
-<input type="checkbox" id="s5" name="s5" value="Huge">
-<label for="s5">Huge</label><br>
-</div>  
-<p id="featurestext">Other Features (Choose Multiple)</p>
-<div id="features">
-<input type="checkbox" id="f1" name="f1" value="Touchscreen">
-<label for="f1">Touchscreen</label><br>
-<input type="checkbox" id="f2" name="f2" value="Full Keyboard">
-<label for="f2">Full Keyboard</label><br>
-</div>
-<input type="button" value="Submit" id="submit" name="submit" onclick="submitForm()">
+
+<form id="rec-form">
+    <input type="number" name="price" placeholder="Enter max price" required>
+
+    <input type="checkbox" name="size" value="14 Inch" id="p1">
+    <label for="p1">14 Inch</label><br>
+
+    <input type="checkbox" name="features" value="Touchscreen" id="f1">
+    <label for="f1">Touchscreen</label><br>
+
+    <button type="button" id="submit" >Submit</button>
+
+</form>
 </div>
 
 <script>
-function submitForm() {
-    // Get budget value
-    var budget = document.getElementById('p1').value;
+  document.getElementById('submit').addEventListener('click', (e) => {
+    e.preventDefault(); // prevent form from submitting normally
+
+    const form = document.getElementById('rec-form');
+    const price = form.price.value;
 
     // Get selected sizes
-    var sizes = [];
-    for (var i = 1; i <= 5; i++) {
-        var s = document.getElementById('s' + i);
-        if (s && s.checked) {
-            sizes.push(s.value);
-        }
-    }
+    const sizes = Array.from(form.querySelectorAll('input[name="size"]:checked'))
+                        .map(cb => cb.value);
 
     // Get selected features
-    var features = [];
-    for (var i = 1; i <= 2; i++) {
-        var f = document.getElementById('f' + i);
-        if (f && f.checked) {
-            features.push(f.value);
-        }
-    }
+    const features = Array.from(form.querySelectorAll('input[name="features"]:checked'))
+                          .map(cb => cb.value);
 
     // Build query string
-    var params = new URLSearchParams();
-    params.append('budget', budget);
-    sizes.forEach(size => params.append('size', size));
-    features.forEach(feature => params.append('feature', feature));
+    const queryParams = new URLSearchParams({
+      price,
+      sizes: sizes.join(','),
+      features: features.join(',')
+    });
 
-    // Redirect to laptopsrec.html with query parameters
-    window.location.href = 'laptopsrec.html?' + params.toString();
-}
+    // Redirect to results page
+    window.location.href = `laptopsrec.html?${queryParams.toString()}`;
+  });
 </script>
+
+
+</script>
+
+
 
 </body>
 </html>
