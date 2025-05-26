@@ -68,23 +68,24 @@
         color: orange;
         font-size: 20px;
         font-weight: bold;
-        padding-top: 15px;
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
     #form-container {
         max-width: 400px; 
         margin: 0 auto;
         padding: 20px;
-        padding-top: 0px;
-        border: 2px solid #444;
-        border-radius: 10px;
+        padding-top: 15px;
+        border: 5px solid #444;
+        border-radius: 15px;
         background-color: #275050;
-        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
     #form-container:hover {
         background-color: darkslategray;
         padding: 22px;
-        padding-top: 2px;
-        box-shadow: 0 0 15px rgba(45, 0, 0, 0.5)
+        padding-top: 17px;
+        box-shadow: 0 0 17px rgba(45, 0, 0, 0.5)
     }
     #featurestext {
         color: orange;
@@ -106,6 +107,30 @@
         border-color: slategray;
         border-width: 5px;
     }
+    #pricebox {
+        width: 75%;
+        padding: 10px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        border: 2px solid #444;
+        border-radius: 5px;
+        background-color: lightgray;
+    }
+    #featurescheckboxes {
+        text-align: center;
+        padding: 10px;
+        background-color: darkslategray;
+        padding-left: 20px;
+        padding-top: 0px;
+    }
+    #featurestext {
+        color: orange;
+        font-size: 20px;
+        font-weight: bold;
+        padding-top: 15px;
+        padding: 10px;
+    }
+
   </style>
 </head>
 
@@ -115,19 +140,22 @@
 
 <div id="form-container">
   <form id="rec-form">
-    <input type="number" name="price" placeholder="Enter max price" required>
+    <input type="number" id="pricebox" name="price" placeholder="Enter max price" required>
 
-    <div>
-      <label><input type="checkbox" name="size" value="14 Inch">14 Inch</label><br>
-      <label><input type="checkbox" name="size" value="15 Inch">15 Inch</label><br>
-      <label><input type="checkbox" name="size" value="16 Inch">16 Inch</label><br>
+    <div id="sizes">
+        <p id="sizetext">Size</p>
+      <label><input id="fourteen" type="checkbox" name="size" value="14 Inch">14 Inch</label><br>
+      <label><input id="fifteen" type="checkbox" name="size" value="15 Inch">15 Inch</label><br>
+      <label><input id="sixteen" type="checkbox" name="size" value="16 Inch">16 Inch</label><br>
     </div>
 
-    <div>
-      <label><input type="checkbox" name="features" value="Touchscreen">Touchscreen</label><br>
+    <div id="featurescheckboxes">
+      <p id="featurestext">Features (Choose Any)</p>
+      <label><input id="c1" type="checkbox" name="features" value="Touchscreen">Touchscreen</label><br>
       <label><input type="checkbox" name="features" value="Backlit Keyboard">Backlit Keyboard</label><br>
       <label><input type="checkbox" name="features" value="Fingerprint Reader">Fingerprint Reader</label><br>
     </div>
+    
 
     <button type="submit" id="submit">Submit</button>
   </form>
