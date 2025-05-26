@@ -1,5 +1,4 @@
 <!DOCTYPE html> 
-<body>
 <html lang="en">
 <head>
     <link rel="icon" type="image/png" sizes="240x240" href="png-clipart-thumbs-up-emoji-smiley-icon-emoticon.png">
@@ -24,6 +23,7 @@
         font-family: Arial, sans-serif;
         text-align: center;
         padding: 50px;
+        position: relative;
     }
     h1 {
         color: orange;
@@ -56,20 +56,41 @@
         transform: scale(1.05);
         transition: transform 0.3s ease;
     }
-   
+    #tofu, #sese {
+        width: 200px;
+        height: auto;
+        margin: 20px;
+    }
+    #tofu:hover, #sese:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+    }
+    #tofu {
+        margin-right: 75%;
+    }
+    #sese {
+        margin-left: 75%;
+        margin-top: -200px;
+        
+    }
 </style>
 </head>
+<body>
 
 <h1>Click the Product Category you Want to Buy</h1>
+<div id="ads">
+<a href="https://www.twinoakstofu.com" target="_blank">
+    <img src="Tofu Ad .png" alt="Twin Oaks Tofu" id="tofu">
+</a>
+<a href="https://www.southernexposure.com/" target="_blank">
+    <img src="Gemini_Generated_Image_xd4e2hxd4e2hxd4e.png" alt="SESE" id="sese">
+</a>
+</div>
 <a href="phones.html" id="phones">Phones</a><br>
 <a href="laptops.html" id="laptops">Laptops</a><br>
 <a href="phoneplans.html" id="phoneplans">Phone Plans</a><br>
 <a href="pcparts.html" id="pcparts">PC Parts</a><br>
 <a href="testingshit.html" id="testingshit"></a><br>
-<a href="https://www.twinoakstofu.com" target="_blank">
-    <img src="Tofu Ad .png" alt="Twin Oaks Tofu" style="width: 200px; height: auto; margin-top: -350px; margin-left: 450px;">
-</a>
-<a href="https://www.southernexposure.com/" target="_blank">
-    <img src="Gemini_Generated_Image_xd4e2hxd4e2hxd4e.png" alt="SESE" style="width: 200px; height: auto; margin-top: -450px; margin-right: 450px;">
+
 </body>
 <html>
