@@ -4,19 +4,13 @@
     <link rel="icon" type="image/png" sizes="240x240" href="png-clipart-thumbs-up-emoji-smiley-icon-emoticon.png">
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-</script>
-
 
 <title>Super Cool Phone Carrier Reccomender</title>
 <style>
     * {
         margin: 0;
         padding: 0;
-        box-sizing: none;
+        box-sizing: border-box; /* Use border-box for better sizing */
     }
     body {
         background-color: darkslategray;
@@ -31,9 +25,30 @@
     p {
         color: orange;
     }
+    #ads {
+        display: flex;
+        justify-content: center;
+        gap: 100px; 
+        margin-bottom: 40px; 
+    }
+    #tofu, #sese {
+        width: 200px;
+        height: 200px;
+        display: inline-block;
+        margin: 0; 
+    }
+    #tofu:hover, #sese:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+    }
+    #options {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
     #phones, #laptops, #phoneplans, #pcparts, #testingshit {
         display: inline-block;
-        margin: 10px;
         padding: 15px 30px;
         font-size: 18px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -42,6 +57,7 @@
         background-color: orange;
         text-decoration: none;
         border-radius: 10px;
+        margin: 0;
     }
     #phones:hover, #laptops:hover, #phoneplans:hover, #pcparts:hover, #testingshit:hover {
         background-color: darkorange;
@@ -56,23 +72,6 @@
         transform: scale(1.05);
         transition: transform 0.3s ease;
     }
-    #tofu, #sese {
-        width: 200px;
-        height: auto;
-        margin: 20px;
-    }
-    #tofu:hover, #sese:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease;
-    }
-    #tofu {
-        margin-right: 75%;
-    }
-    #sese {
-        margin-left: 75%;
-        margin-top: -200px;
-        
-    }
 </style>
 </head>
 <body>
@@ -86,11 +85,12 @@
     <img src="Gemini_Generated_Image_xd4e2hxd4e2hxd4e.png" alt="SESE" id="sese">
 </a>
 </div>
+<div id="options">
 <a href="phones.html" id="phones">Phones</a><br>
 <a href="laptops.html" id="laptops">Laptops</a><br>
 <a href="phoneplans.html" id="phoneplans">Phone Plans</a><br>
 <a href="pcparts.html" id="pcparts">PC Parts</a><br>
 <a href="testingshit.html" id="testingshit"></a><br>
-
+<div>
 </body>
-<html>
+</html>
