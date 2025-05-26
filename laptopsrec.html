@@ -2,6 +2,47 @@
 <html>
 <head>
   <title>Laptop Recommendations</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: darkslategray;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 5%;
+    }
+    #results {
+      color: orange;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #333;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      color: orange;
+      padding: 10px;
+      padding-bottom: 30px;
+      font-weight: bold;
+      font-size: 50px;
+    }
+    .product {
+      margin-bottom: 20px;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: #222;
+    }
+    #buy {
+      color: black;
+      text-decoration: none;
+      padding: 10px 20px;
+      background-color: orange;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
   <h1>Laptop Recommendations</h1>
@@ -106,7 +147,7 @@
           <p><strong>Price:</strong> $${p.price}</p>
           <p><strong>Size:</strong> ${p.size}</p>
           <p><strong>Features:</strong> ${featuresList}</p>
-          <a href="${p.link}" target="_blank" style="color: lightblue;">Buy</a>
+          <a id="buy" href="${p.link}" target="_blank" style="color: black;">Buy</a>
         </div>`;
       }).join('');
       document.getElementById('results').innerHTML = resultsHtml;
