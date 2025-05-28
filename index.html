@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<title>Super Cool Phone Carrier Reccomender</title>
+<title>Tech Recommendations</title>
 <style>
     * {
         margin: 0;
@@ -21,6 +21,10 @@
     }
     h1 {
         color: orange;
+        font-weight: bold;
+        font-size: 50px;
+        padding-top: 20px;
+        padding-bottom: 40px;
     }
     p {
         color: orange;
@@ -28,8 +32,13 @@
     #ads {
         display: flex;
         justify-content: center;
-        gap: 100px; 
+        gap: 90%;
         margin-bottom: 40px; 
+        margin-left: 0%;
+        margin-top: -25%;
+        position: absolute;
+        top: 75%;
+        left: 26.9%;
     }
     #tofu, #sese {
         width: 200px;
@@ -37,9 +46,14 @@
         display: inline-block;
         margin: 0; 
     }
+    #tofu img {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+    }
     #tofu:hover, #sese:hover {
         transform: scale(1.05);
-        transition: transform 0.3s ease;
+        transition: transform 0.2s ease;
     }
     #options {
         display: flex;
@@ -63,15 +77,6 @@
         background-color: darkorange;
         font-size: 20px;
     }
-    a img {
-        width: 200px;
-        height: auto;
-        margin-top: 20px;
-    }
-    a img:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease;
-    }
 </style>
 </head>
 <body>
@@ -90,7 +95,7 @@
 <a href="laptops.html" id="laptops">Laptops</a><br>
 <a href="phoneplans.html" id="phoneplans">Phone Plans</a><br>
 <a href="pcparts.html" id="pcparts">PC Parts</a><br>
-<a href="testingshit.html" id="testingshit"></a><br>
+<!-- a href="testingshit.html" id="testingshit"></a><br -->
 <div>
 </body>
 </html>
