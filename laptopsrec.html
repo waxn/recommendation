@@ -50,111 +50,110 @@
   <div id="results">Loading...</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  // This script fetches laptop recommendations from Supabase based on URL parameters
+// and displays them on the results page.
 
-  <script>
-    console.log("Script loaded!");
+console.log("Results Script loaded!");
 
-    const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Supabase configuration (ensure these are correct for your project)
+const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+// Initialize Supabase client
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    
-    function cleanFeatures(featuresStr) {
-      let trimmed = featuresStr.trim();
-      
-      if(trimmed.startsWith('[') && trimmed.endsWith(']')) {
-        trimmed = trimmed.slice(1, -1);
-      }
-      
-      trimmed = trimmed.replace(/['"]/g, '');
-      
-      return trimmed.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-    }
+// List of all boolean feature/size columns from your CSV
+const BOOLEAN_COLUMNS = [
+    "OLED",
+    "95%+ 5 Star Reviews",
+    "small",
+    "14 inch",
+    "15 inch",
+    "16 inch",
+    "huge",
+    "Long Battery Life",
+    "Backlit Keyboard",
+    "High Refresh Rate",
+    "Full Keyboard",
+    "Touchscreen",
+    "Fingerprint Reader",
+    "gaming"
+];
 
-    async function getRecommendations() {
-      const params = new URLSearchParams(window.location.search);
-      const priceStr = params.get('price') || '9999999';
-      const price = parseFloat(priceStr);
-      
-      const sizes = params.get('sizes') ? params.get('sizes').split(',').map(s => s.trim()) : [];
-      const features = params.get('features') ? params.get('features').split(',').map(f => f.trim().toLowerCase()) : [];
-      console.log("Params:", { price, sizes, features });
+// Asynchronous function to get laptop recommendations
+async function getRecommendations() {
+    // Get URL parameters
+    const params = new URLSearchParams(window.location.search);
 
-      let { data, error } = await supabase
-        .from('laptops')
+    // Get price and convert to a number, default to a very high number if not present
+    const priceStr = params.get('price') || '9999999';
+    const price = parseFloat(priceStr);
+    console.log("Params:", { price });
+
+    // Start building the Supabase query
+    let query = supabase
+        .from('laptops') // Your table name
         .select('*')
-        .lte('price', price);
-      console.log("Raw Supabase data:", data, "Error:", error);
-      if (error) {
-        console.error("Supabase error:", error);
-        document.getElementById('results').innerText = 'Error loading products';
-        return;
-      }
-      if (!data || data.length === 0) {
-        document.getElementById('results').innerHTML = '<p style="color: red;">No products found from query.</p>';
-        return;
-      }
-      console.log("Data count before filtering:", data.length);
+        .lte('price', price); // Filter by price
 
-     
-      if (sizes.length > 0) {
-        const normalizedSizes = sizes.map(s => s.toLowerCase());
-        console.log("Applying size filter. Expected sizes:", normalizedSizes);
-        data = data.filter(laptop => {
-          const laptopSize = laptop.size ? laptop.size.trim().toLowerCase() : "";
-          console.log(`Laptop "${laptop.name}" size:`, laptopSize);
-          return normalizedSizes.includes(laptopSize);
-        });
-        console.log("Data count after size filtering:", data.length);
-      }
-
-      
-      if (features.length > 0) {
-        console.log("Applying feature filter. Expected features:", features);
-        data = data.filter(laptop => {
-          console.log("Laptop:", laptop.name, "Raw features:", laptop.features);
-          let laptopFeatures;
-          try {
-            laptopFeatures = JSON.parse(laptop.features);
-            
-            if (Array.isArray(laptopFeatures)) {
-              laptopFeatures = laptopFeatures.map(f => f.trim().toLowerCase());
-            }
-          } catch {
-            
-            laptopFeatures = laptop.features ? cleanFeatures(laptop.features) : [];
-          }
-          console.log(`Laptop "${laptop.name}" normalized features:`, laptopFeatures);
-          return features.every(f => laptopFeatures.includes(f));
-        });
-        console.log("Data count after feature filtering:", data.length);
-      }
-
-      if (data.length === 0) {
-        document.getElementById('results').innerHTML = '<p style="color: red;">No products found after filtering.</p>';
-        return;
-      }
-
-      const resultsHtml = data.map(p => {
-        let featuresList;
-        try {
-          featuresList = JSON.parse(p.features).join(', ');
-        } catch {
-          featuresList = p.features || '';
+    // Apply filters for each boolean column if present in URL parameters
+    BOOLEAN_COLUMNS.forEach(columnName => {
+        // Check if the column name is present in the URL parameters and its value is 'true'
+        if (params.get(columnName) === 'true') {
+            query = query.eq(columnName, true); // Add an equality filter
+            console.log(`Applying filter: ${columnName} = true`);
         }
-        return `<div class="product" style="color: orange; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; padding: 10px;">
-          <h2>${p.name}</h2>
-          <img src="${p['Image URL']}" alt="${p.name}" style="max-width:200px; max-height:150px; display:block; margin:0 auto 10px;">
-          <p><strong>Price:</strong> $${p.price}</p>
-          <p><strong>Size:</strong> ${p.size}</p>
-          <p><strong>Features:</strong> ${featuresList}</p>
-          <a id="buy" href="${p.link}" target="_blank" style="color: black;">Buy</a>
-        </div>`;
-      }).join('');
-      document.getElementById('results').innerHTML = resultsHtml;
+    });
+
+    // Execute the Supabase query
+    let { data, error } = await query;
+    console.log("Raw Supabase data:", data, "Error:", error);
+
+    // Handle errors from Supabase
+    if (error) {
+        console.error("Supabase error:", error);
+        document.getElementById('results').innerText = 'Error loading products.';
+        return;
     }
 
-    document.addEventListener('DOMContentLoaded', getRecommendations);
-  </script>
+    // Handle no data found
+    if (!data || data.length === 0) {
+        document.getElementById('results').innerHTML = '<p style="color: red;">No products found matching your criteria.</p>';
+        return;
+    }
+
+    console.log("Data count after filtering:", data.length);
+
+    // Generate HTML for the results
+    const resultsHtml = data.map(p => {
+        // Dynamically build the features list for display
+        const displayedFeatures = [];
+        BOOLEAN_COLUMNS.forEach(columnName => {
+            // If the laptop has this feature (boolean column is true), add it to the list
+            if (p[columnName] === true) {
+                // Format the column name for display (e.g., "95%+ 5 Star Reviews" to "95%+ 5 Star Reviews")
+                displayedFeatures.push(columnName);
+            }
+        });
+
+        return `
+            <div class="product" style="color: orange; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; padding: 10px;">
+                <h2>${p.name}</h2>
+                <img src="${p.image_url}" alt="${p.name}" style="max-width:200px; max-height:150px; display:block; margin:0 auto 10px;">
+                <p><strong>Price:</strong> $${p.price}</p>
+                <p><strong>Features:</strong> ${displayedFeatures.length > 0 ? displayedFeatures.join(', ') : 'None specified'}</p>
+                <a id="buy" href="${p.link}" target="_blank" style="color: black;">Buy</a>
+            </div>
+        `;
+    }).join('');
+
+    // Display the results
+    document.getElementById('results').innerHTML = resultsHtml;
+}
+
+// Call the getRecommendations function when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', getRecommendations);
+
+</script>
 </body>
 </html>

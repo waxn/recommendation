@@ -3,6 +3,7 @@
 <head>
 <title>Phone Finder</title>
 <link rel="icon" sizes="240x240" href="recommendation-favicon.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
     * {
         margin: 0;
@@ -94,94 +95,45 @@
 <h1>You want a phone? I got you!</h1>
 <p>Just check some boxes and I will find the best phone for you!</p>
 <div id="form-container">
-<div id="price">
-<p id="pricetitle">Price Range (Choose One)</p>
-<form action="laptopsrec.html" method="post">
-<input type="checkbox" id="p1" name="p1" value="$100-$200">
-<label for="p1">$100-$200</label><br>
-<input type="checkbox" id="p2" name="p2" value="$200-$300">
-<label for="p2">$200-$300</label><br>
-<input type="checkbox" id="p3" name="p3" value="$300-$400">
-<label for="p3">$300-$400</label><br>
-<input type="checkbox" id="p1" name="p1" value="$400-500">
-<label for="p4">$400-500</label><br>
-<input type="checkbox" id="p5" name="p5" value="$500-600">
-<label for="p5">$500-600</label><br>
-<input type="checkbox" id="p6" name="p6" value="$600-700">
-<label for="p6">$600-700</label><br>
-<input type="checkbox" id="p7" name="p7" value="$700-800">
-<label for="p7">$700-800</label><br>
-<input type="checkbox" id="p8" name="p8" value="$800-900">
-<label for="p8">$800-900</label><br>
-<input type="checkbox" id="p9" name="p9" value="$900-1000">
-<label for="p9">$900-1000</label><br>
-<input type="checkbox" id="p10" name="p10" value="$1000-1100">
-<label for="p10">$1000-1100</label><br>
-<input type="checkbox" id="p11" name="p11" value="$1100-1200">
-<label for="p11">$1100-1200</label><br>
-<input type="checkbox" id="p12" name="p12" value="1200-1500">
-<label for="p12">$1200-$1500</label><br>
-</div>
-<div id="size">
-<p id="sizetext">Size (Choose One)</p>
-<input type="checkbox" id="s1" name="s1" value="less than 6.5 inches">
-<label for="s1">Less than 6.5"</label><br>
-<input type="checkbox" id="s2" name="s2" value="over 6.5 inches">
-<label for="s2">More than 6.5"</label><br>
-</div>  
-<p id="featurestext">Other Features (Choose Multiple)</p>
-<div id="features">
-<input type="checkbox" id="f1" name="f1" value="Telephoto Camera">
-<label for="f1">Telephoto Camera</label><br>
-<input type="checkbox" id="f2" name="f2" value="Wireless Charging">
-<label for="f2">Wireless Charging</label><br>
-<input type="checkbox" id="f3" name="f3" value="eSIM">
-<label for="f3">eSIM</label><br>
-</div>
-<input type="button" value="Submit" id="submit" name="submit" onclick="submitForm()">
-</div>
+<form id="priceform">
+    <input type="number" id="pricebox" name="price" placeholder="Enter max price" required>
 
+    <div id="sizes">
+        <p id="sizetext">Size</p>
+      <label><input id="fourteen" type="checkbox" name="size" value="14 Inch">14 Inch</label><br>
+      <label><input id="Under 6.5 Inch" type="checkbox" name="size" value="Over 6.5 Inch">Over 6.5"</label><br>
+    </div>
+
+    <div id="featurescheckboxes">
+      <p id="featurestext">Features (Choose Any)</p>
+      <label><input id="c1" type="checkbox" name="features" value="Touchscreen">Touchscreen</label><br>
+      <label><input type="checkbox" name="features" value="Backlit Keyboard">Backlit Keyboard</label><br>
+      <label><input type="checkbox" name="features" value="Fingerprint Reader">Fingerprint Reader</label><br>
+    </div>
+    
+    <button type="submit" id="submit">Submit</button>
+</form>
+</div>
+  
 <script>
-function submitForm() {
-    var priceRange = [];
-    var size = [];
-    var os = [];
-    var features = [];
+    const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Get selected price range
-    for (var i = 1; i <= 12; i++) {
-        if (document.getElementById('p' + i).checked) {
-            priceRange.push(document.getElementById('p' + i).value);
-        }
-    }
+  document.getElementById('rec-form').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    // Get selected size
-    for (var i = 1; i <= 2; i++) {
-        if (document.getElementById('s' + i).checked) {
-            size.push(document.getElementById('s' + i).value);
-        }
-    }
+    const price = document.querySelector('input[name="price"]').value;
+ const sizes = Array.from(document.querySelectorAll('input[name="size"]:checked')).map(cb => cb.value);
+    const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(cb => cb.value);
 
-    // Get selected operating system
-    for (var i = 1; i <= 2; i++) {
-        if (document.getElementById('os' + i).checked) {
-            os.push(document.getElementById('os' + i).value);
-        }
-    }
+    const params = new URLSearchParams();
+    params.set('price', price);
+    if (sizes.length) params.set('sizes', sizes.join(','));
+    if (features.length) params.set('features', features.join(','));
 
-    // Get selected features
-    for (var i = 1; i <= 3; i++) {
-        if (document.getElementById('f' + i).checked) {
-            features.push(document.getElementById('f' + i).value);
-        }
-    }
-
-    // Display the selected options
-    alert("Selected Price Range: " + priceRange.join(", ") +
-          "\nSelected Size: " + size.join(", ") +
-          "\nSelected Operating System: " + os.join(", ") +
-          "\nSelected Features: " + features.join(", "));
-}
+    window.location.href = `laptopsrec.html?${params.toString()}`;
+  });
 </script>
 
 </body>
