@@ -102,7 +102,6 @@
         font-weight: bold;
         padding-top: 15px;
         background-color: darkslategray;
-        background-opacity: 0.5;
         border-radius: 10px;
         border-color: slategray;
         border-width: 5px;
@@ -130,6 +129,18 @@
         padding-top: 15px;
         padding: 10px;
     }
+       #help-message {
+       position: fixed;
+       bottom: 20px;
+       right: 20px;
+       background: rgba(44, 62, 80, 0.95);
+       color: orange;
+       padding: 12px 20px;
+       border-radius: 8px;
+       font-size: 16px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+       z-index: 1000;
+   }
 
   </style>
 </head>
@@ -158,6 +169,11 @@
     
     <button type="submit" id="submit">Submit</button>
   </form>
+</div>
+<div id="help-message">
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: orange; text-decoration: underline;">
+    For help email help@waxnflaxn.xyz
+  </a>
 </div>
 
 <div id="results"></div>
