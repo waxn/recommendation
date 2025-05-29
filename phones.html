@@ -98,6 +98,7 @@
        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
        z-index: 1000;
    }
+   
 
 
 </style>
@@ -130,27 +131,63 @@
     For help email help@waxnflaxn.xyz
   </a>
 </div>
-  
+<div id="results"></div>
+
 <script>
-    const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// This script handles collecting user selections from the feature selection form
+// and preparing them as URL parameters for the results page.
 
-  document.getElementById('rec-form').addEventListener('submit', function(e) {
-    e.preventDefault();
+// Supabase configuration (ensure these are correct for your project)
+const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+// Initialize Supabase client (assuming you have the Supabase JS library loaded in your HTML)
+// For example: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// List of all boolean feature/size columns from your CSV
+const BOOLEAN_COLUMNS = [
+    "OLED",
+    "95%+ 5 Star Reviews",
+    "small",
+    "14 inch",
+    "15 inch",
+    "16 inch",
+    "huge",
+    "Long Battery Life",
+    "Backlit Keyboard",
+    "High Refresh Rate",
+    "Full Keyboard",
+    "Touchscreen",
+    "Fingerprint Reader",
+    "gaming"
+];
+
+// Add an event listener to the form submission
+document.getElementById('rec-form').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    // Get the price input value
     const price = document.querySelector('input[name="price"]').value;
- const sizes = Array.from(document.querySelectorAll('input[name="size"]:checked')).map(cb => cb.value);
-    const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(cb => cb.value);
 
+    // Create a new URLSearchParams object to build the query string
     const params = new URLSearchParams();
-    params.set('price', price);
-    if (sizes.length) params.set('sizes', sizes.join(','));
-    if (features.length) params.set('features', features.join(','));
+    params.set('price', price); // Add price to parameters
 
+    // Iterate through all defined boolean columns
+    BOOLEAN_COLUMNS.forEach(columnName => {
+        // Find the checkbox associated with this column name
+        // It's assumed your checkboxes have `name` attributes matching the column names
+        // For example: <input type="checkbox" name="OLED" value="true">
+        const checkbox = document.querySelector(`input[name="${columnName}"]:checked`);
+        if (checkbox) {
+            // If the checkbox is checked, add it to the URL parameters with a value of 'true'
+            params.set(columnName, 'true');
+        }
+    });
+
+    // Redirect to the results page with the constructed URL parameters
     window.location.href = `laptopsrec.html?${params.toString()}`;
-  });
+});
 </script>
-
 </body>
 </html>
