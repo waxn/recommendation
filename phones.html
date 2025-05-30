@@ -108,7 +108,31 @@
        font-size: 16px;
        font-weight: bold;
    }
-
+   .tooltip {
+  position: relative;
+  cursor: pointer;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 220px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  left: 110%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-size: 14px;
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
 
 </style>
 </head>
@@ -127,9 +151,26 @@
 
     <div id="featurescheckboxes">
       <p id="featurestext">Features (Choose Any)</p>
-      <label><input id="c1" type="checkbox" name="features" value="Touchscreen">Touchscreen</label><br>
-      <label><input type="checkbox" name="features" value="Backlit Keyboard">Backlit Keyboard</label><br>
-      <label><input type="checkbox" name="features" value="Fingerprint Reader">Fingerprint Reader</label><br>
+        <label class="tooltip">
+        <input type="checkbox" name="features" value="Triple Camera">
+        Triple Camera
+        <span class="tooltiptext">Phones with three rear cameras for better zoom and wide-angle shots.</span>
+        </label><br>
+        <label class="tooltip">
+            <input type="checkbox" name="features" value="Sattelite Connectivity Capable">
+             Satellite Connectivity Capable
+            <span class="tooltiptext">Can connect to satellites for texting with compatible phone plan</span>
+        </label><br>
+        <label class="tooltip">
+            <input type="checkbox" name="features" value="OLED">
+            OLED
+            <span class="tooltiptext">A type of screen that turns pixels off when black, improving contrast and battery life (it really does make a difference)!</span>
+        </label><br>
+        <label><input type="checkbox" name="features" value="95%+ 5 Star Reviews">95%+ 5 Star Reviews</label><br>
+        <label><input type="checkbox" name="features" value="Small">Small</label><br>
+        <label><input type="checkbox" name="features" value="Large">Large</label><br>
+        <label><input type="checkbox" name="features" value="Long Battery Life">Long Battery Life</label><br>
+        <label><input type="checkbox" name="features" value="Wireless Charging">Wireless Charging</label><br>
     </div>
     
     <button type="submit" id="submit">Submit</button>
@@ -157,18 +198,12 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const BOOLEAN_COLUMNS = [
     "OLED",
     "95%+ 5 Star Reviews",
-    "small",
-    "14 inch",
-    "15 inch",
-    "16 inch",
-    "huge",
+    "Small",
+    "Large",
     "Long Battery Life",
-    "Backlit Keyboard",
-    "High Refresh Rate",
-    "Full Keyboard",
-    "Touchscreen",
-    "Fingerprint Reader",
-    "gaming"
+    "Triple Camera",
+    "Wireless Charging",
+    "Satellite Connectivity",
 ];
 
 // Add an event listener to the form submission
@@ -195,7 +230,7 @@ document.getElementById('rec-form').addEventListener('submit', function(e) {
     });
 
     // Redirect to the results page with the constructed URL parameters
-    window.location.href = `laptopsrec.html?${params.toString()}`;
+    window.location.href = `phonesrec.html?${params.toString()}`;
 });
 </script>
 </body>
