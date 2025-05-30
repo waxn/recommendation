@@ -161,7 +161,7 @@
 
 <div id="form-container">
   <form id="rec-form">
-<input type="number" id="pricebox" name="price" placeholder="Enter max price" required>    
+    <input type="number" id="pricebox" name="price" placeholder="Enter max price" required>
 
     <div id="sizes">
         <p id="sizetext">Size</p>
@@ -190,16 +190,16 @@
 
   <div id="results"></div>
 
-<script>
+  <script>
 // This script handles collecting user selections from the feature selection form
 // and preparing them as URL parameters for the results page.
 
 // Supabase configuration (ensure these are correct for your project)
-const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+    const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
 // Initialize Supabase client (assuming you have the Supabase JS library loaded in your HTML)
 // For example: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // List of all boolean feature/size columns from your CSV
 const BOOLEAN_COLUMNS = [
@@ -220,7 +220,7 @@ const BOOLEAN_COLUMNS = [
 ];
 
 // Add an event listener to the form submission
-document.getElementById('rec-form').addEventListener('submit', function(e) {
+  document.getElementById('rec-form').addEventListener('submit', function(e) {
     e.preventDefault(); // Prevent the default form submission
 
     // Get the price input value
@@ -244,7 +244,7 @@ document.getElementById('rec-form').addEventListener('submit', function(e) {
 
     // Redirect to the results page with the constructed URL parameters
     window.location.href = `laptopsrec.html?${params.toString()}`;
-});
+  });
 
   </script>
 </body>
