@@ -19,7 +19,8 @@
     h1 {
         color: orange;
         padding: 10px;
-        padding-bottom: 30px;
+        padding-bottom: 20px;
+        padding-top: -10px;
         font-weight: bold;
         font-size: 50px;
     }
@@ -138,7 +139,13 @@
         padding-top: 15px;
         padding: 10px;
     }
-
+    #prefnetworktext {
+        color: orange;
+        font-size: 20px;
+        font-weight: bold;
+        padding-top: 15px;
+        padding-bottom: 10px;
+    }
   </style>
 </head>
 
@@ -154,7 +161,8 @@
         <p id="prefnetworktext">Network</p>
       <label><input id="Verizon" type="checkbox" name="prefnetwork" value="Verizon">Verizon</label><br>
       <label><input id="AT&T" type="checkbox" name="prefnetwork" value="AT&T">AT&T</label><br>
-      <label><input id="T-Mobile" type="checkbox" name="Prefnetwork" value="T-Mobile">T-Mobile</label><br>
+      <label><input id="T-Mobile" type="checkbox" name="prefnetwork" value="T-Mobile">T-Mobile</label><br>
+      <label><input id="any" type="checkbox" name="prefnetwork" value="any">Any</label><br>
     </div>
 
     <div id="featurescheckboxes">
