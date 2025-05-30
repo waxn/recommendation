@@ -35,6 +35,7 @@
       border-radius: 10px;
       padding: 10px;
       background-color: #222;
+      height: 110%;
     }
     #buy {
       color: black;
@@ -42,6 +43,17 @@
       padding: 10px 20px;
       background-color: orange;
       border-radius: 5px;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    #buy:hover {
+      background-color: darkorange;
+      font-size: 18px;
+    }
+    #features {
+      color: orange;
+      padding: 18px 0;
     }
     #help-message {
        position: fixed;
@@ -65,7 +77,8 @@
        font-size: 16px;
        font-weight: bold;
    }
-   
+
+
 
   </style>
 </head>
@@ -147,7 +160,7 @@ async function getRecommendations() {
 
     // Handle no data found
     if (!data || data.length === 0) {
-        document.getElementById('results').innerHTML = '<p style="color: red;">No products found matching your criteria.</p>';
+        document.getElementById('results').innerHTML = '<p style="color: red; font-weight: bold;">No products found matching your criteria.</p>';
         return;
     }
 
@@ -166,12 +179,12 @@ async function getRecommendations() {
         });
 
         return `
-            <div class="product" style="color: orange; margin-bottom: 20px; border: 1px solid #444; border-radius: 10px; padding: 10px;">
+            <div class="product" style="color: orange; margin-bottom: 15px; border: 1px solid #444; border-radius: 10px; padding: 10px;">
                 <h2>${p.name}</h2>
                 <img src="${p.image_url}" alt="${p.name}" style="max-width:200px; max-height:150px; display:block; margin:0 auto 10px;">
                 <p><strong>Price:</strong> $${p.price}</p>
-                <p><strong>Features:</strong> ${displayedFeatures.length > 0 ? displayedFeatures.join(', ') : 'None specified'}</p>
-                <a id="buy" href="${p.link}" target="_blank" style="color: black;">Buy</a>
+                <p id="features"><strong>Features:</strong> ${displayedFeatures.length > 0 ? displayedFeatures.join(', ') : 'None specified'}</p>
+                <a id="buy" href="${p.link}" target="_blank" style="color: black; padding-bottom: 10px;">Buy</a>
             </div>
         `;
     }).join('');
