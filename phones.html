@@ -44,20 +44,15 @@
         background-color: darkorange;
         font-size: 25px;
     }
-    #prices {
-        background-color: darkslategray;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 0 5px rgba(45, 0, 0, 0.5);
+    #pricebox {
+        width: 75%;
+        padding: 10px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        border: 2px solid #444;
+        border-radius: 5px;
+        background-color: lightgray;
     }
-    #pricetitle {
-        color: orange;
-        font-size: 20px;
-        font-weight: bold;
-        position: center;
-        padding-top: 15px;
-    }
-
     #form-container {
         max-width: 400px; /* adjust width as needed */
         margin: 0 auto;
@@ -103,30 +98,30 @@
        font-weight: bold;
    }
    .tooltip {
-  position: relative;
-  cursor: pointer;
-}
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 220px;
-  background-color: #333;
-  color: #fff;
-  text-align: left;
-  border-radius: 6px;
-  padding: 8px;
-  position: absolute;
-  z-index: 1;
-  left: 110%;
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0;
-  transition: opacity 0.2s;
-  font-size: 14px;
-}
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
+        position: relative;
+        cursor: pointer;
+    }
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 220px;
+        background-color: #333;
+        color: #fff;
+        text-align: left;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 1;
+        left: 110%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: opacity 0.2s;
+        font-size: 14px;
+    }
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
 
 </style>
 </head>
