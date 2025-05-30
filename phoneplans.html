@@ -146,6 +146,22 @@
         padding-top: 15px;
         padding-bottom: 10px;
     }
+    #prefnetworkcheckboxes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 5px;
+        justify-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    #prefnetworkcheckboxes label {
+        color: orange;
+        font-size: 18px;
+        font-weight: normal;
+    }
+    #prefnetworkcheckboxes input[type="checkbox"] {
+        margin-right: 5px;
+    }
   </style>
 </head>
 
@@ -159,10 +175,12 @@
 
     <div id="prefnetwork">
         <p id="prefnetworktext">Network</p>
-      <label><input id="Verizon" type="checkbox" name="prefnetwork" value="Verizon">Verizon</label><br>
-      <label><input id="AT&T" type="checkbox" name="prefnetwork" value="AT&T">AT&T</label><br>
-      <label><input id="T-Mobile" type="checkbox" name="prefnetwork" value="T-Mobile">T-Mobile</label><br>
-      <label><input id="any" type="checkbox" name="prefnetwork" value="any">Any</label><br>
+        <div id="prefnetworkcheckboxes">
+          <label><input id="Verizon" type="checkbox" name="prefnetwork" value="Verizon">Verizon</label>
+          <label><input id="AT&T" type="checkbox" name="prefnetwork" value="AT&T">AT&T</label>
+          <label><input id="T-Mobile" type="checkbox" name="prefnetwork" value="T-Mobile">T-Mobile</label>
+          <label><input id="any" type="checkbox" name="prefnetwork" value="any">Any</label>
+      </div>
     </div>
 
     <div id="featurescheckboxes">
