@@ -162,6 +162,18 @@
     #prefnetworkcheckboxes input[type="checkbox"] {
         margin-right: 5px;
     }
+    #datatext {
+        color: orange;
+        font-size: 20px;
+        font-weight: bold;
+        padding-top: 15px;
+        padding-bottom: 10px;
+    }
+    #data {
+        text-align: left;
+        padding: 10px;
+        padding-left: 25px;
+    }
   </style>
 </head>
 
@@ -183,12 +195,14 @@
       </div>
     </div>
 
-    <div id="featurescheckboxes">
-      <p id="featurestext">Features (Choose Any)</p>
-      <label><input id="c1" type="checkbox" name="features" value="Touchscreen">Touchscreen</label><br>
-      <label><input type="checkbox" name="features" value="Backlit Keyboard">Backlit Keyboard</label><br>
-      <label><input type="checkbox" name="features" value="Fingerprint Reader">Fingerprint Reader</label><br>
+    <div id="data">
+        <p id="datatext">Data</p>
+        <label><input type="checkbox" name="size" value="1GB">1GB</label><br>
+        <label><input type="checkbox" name="size" value="5GB">5GB</label><br>
+        <label><input type="checkbox" name="size" value="10GB">10GB</label><br>
+        <label><input type="checkbox" name="size" value="Unlimited">Unlimited</label><br>
     </div>
+
     
     <button type="submit" id="submit">Submit</button>
   </form>
