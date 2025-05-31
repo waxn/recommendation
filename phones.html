@@ -14,7 +14,7 @@
         background-color: darkslategray;
         font-family: Arial, sans-serif;
         text-align: center;
-        padding: 5%;
+        padding: 2%;
     }
     h1 {
         color: orange;
@@ -66,13 +66,13 @@
     #form-container:hover {
         background-color: darkslategray;
         padding: 25px;
-        padding-top: 5px;
+        padding-top: 15px;
         box-shadow: 0 0 15px rgba(45, 0, 0, 0.5)
     }
     #featurestext {
         color: orange;
-        font-size: 20px;
-        font-weight: bold;
+        font-size: 25px;
+        font-weight: bolder;
         padding-top: 15px;
         padding-bottom: 10px;
     }
@@ -123,7 +123,15 @@
         visibility: visible;
         opacity: 1;
     }
-
+    #featurescheckboxes input[type="checkbox"] {
+        margin-right: 5px;
+    }
+    #featurescheckboxes label {
+        display: block;
+        color: orange;
+        font-size: 16px;
+        font-weight: bold;
+    }
 </style>
 </head>
 
@@ -151,11 +159,30 @@
             OLED
             <span class="tooltiptext">A type of screen that turns pixels off when black, improving contrast and battery life (it really does make a difference)!</span>
         </label><br>
-        <label><input type="checkbox" name="features" value="95%+ 5 Star Reviews">95%+ 5 Star Reviews</label><br>
-        <label><input type="checkbox" name="features" value="Small">Small</label><br>
-        <label><input type="checkbox" name="features" value="Large">Large</label><br>
-        <label><input type="checkbox" name="features" value="Long Battery Life">Long Battery Life</label><br>
-        <label><input type="checkbox" name="features" value="Wireless Charging">Wireless Charging</label><br>
+        <label class="tooltip">
+            <input type="checkbox" name="features" value="95%+ 5 Star Reviews">
+            Well Reviewed
+            <span class="tooltiptext">Phones with an average rating of 4.5+ stars</span>
+        </label><br>
+        <label class="tooltip">
+            <input type="checkbox" name="features" value="Small">
+            Small
+            <span class="tooltiptext">Screen size under 6.5 inches diagonally</span>
+        </label><br>
+        <label class="tooltip">
+            <input type="checkbox" name="features" value="Large">
+            Large
+            <span class="tooltiptext">Screen size over 6.5 inches diagonally</span>
+        </label><br>
+        <label class="tooltip">
+            <input type="checkbox" name="features" value="Long Battery Life">
+            Long Battery Life
+            <span class="tooltiptext">Phones with a battery life of 15+ hours on average while streaming a video (according to the manufacturer)</span>
+        </label><br>
+        <label class="tooltip">
+            <input type="checkbox" name="features" value="Wireless Charging">
+            Wireless Charging
+            <span class="tooltiptext">Ability to charge wirelessly</span>
     </div>
     
     <button type="submit" id="submit">Submit</button>
