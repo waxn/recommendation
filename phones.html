@@ -206,44 +206,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // For example: <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// List of all boolean feature/size columns from your CSV
-const BOOLEAN_COLUMNS = [
-    "OLED",
-    "95%+ 5 Star Reviews",
-    "Small",
-    "Large",
-    "Long Battery Life",
-    "Triple Camera",
-    "Wireless Charging",
-    "Satellite Connectivity",
-];
 
-// Add an event listener to the form submission
-document.getElementById('rec-form').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent the default form submission
-
-    // Get the price input value
-    const price = document.querySelector('input[name="price"]').value;
-
-    // Create a new URLSearchParams object to build the query string
-    const params = new URLSearchParams();
-    params.set('price', price); // Add price to parameters
-
-    // Iterate through all defined boolean columns
-    BOOLEAN_COLUMNS.forEach(columnName => {
-        // Find the checkbox associated with this column name
-        // It's assumed your checkboxes have `name` attributes matching the column names
-        // For example: <input type="checkbox" name="OLED" value="true">
-        const checkbox = document.querySelector(`input[name="${columnName}"]:checked`);
-        if (checkbox) {
-            // If the checkbox is checked, add it to the URL parameters with a value of 'true'
-            params.set(columnName, 'true');
-        }
-    });
-
-    // Redirect to the results page with the constructed URL parameters
-    window.location.href = `phonesrec.html?${params.toString()}`;
-});
 </script>
 </body>
 </html>
