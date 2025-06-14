@@ -243,22 +243,26 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  document.getElementById('rec-form').addEventListener('submit', function(e) {
+    const form = document.getElementById('rec-form');
+form.addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const price = document.querySelector('input[name="price"]').value;
- const sizes = Array.from(document.querySelectorAll('input[name="size"]:checked')).map(cb => cb.value);
-    const features = Array.from(document.querySelectorAll('input[name="features"]:checked')).map(cb => cb.value);
+    // Get values from form
+    const price = document.getElementById('pricebox').value;
+    const networks = Array.from(document.querySelectorAll('input[name="prefnetwork"]:checked')).map(cb => cb.value);
+    const sizes = Array.from(document.querySelectorAll('input[name="size"]:checked')).map(cb => cb.value);
 
+    // Build query string
     const params = new URLSearchParams();
     params.set('price', price);
-    if (sizes.length) params.set('sizes', sizes.join(','));
-    if (features.length) params.set('features', features.join(','));
+    networks.forEach(n => params.append('network', n));
+    sizes.forEach(s => params.append('size', s));
 
-    window.location.href = `laptopsrec.html?${params.toString()}`;
-  });
+    // Redirect with params
+    window.location.href = 'phoneplansrec.html?' + params.toString();
+});
+</script>
 
-  </script>
 </body>
 </html>
 

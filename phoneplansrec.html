@@ -104,98 +104,58 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// List of all boolean feature/size columns from your CSV
-const BOOLEAN_COLUMNS = [
-    "OLED",
-    "95%+ 5 Star Reviews",
-    "small",
-    "14 inch",
-    "15 inch",
-    "16 inch",
-    "huge",
-    "Long Battery Life",
-    "Backlit Keyboard",
-    "High Refresh Rate",
-    "Full Keyboard",
-    "Touchscreen",
-    "Fingerprint Reader",
-    "gaming"
-];
-
-// Asynchronous function to get laptop recommendations
-async function getRecommendations() {
-    // Get URL parameters
+async function fetchPlans() {
     const params = new URLSearchParams(window.location.search);
+    const price = parseFloat(params.get('price'));
+    const networks = params.getAll('network');
+    const sizes = params.getAll('size');
 
-    // Get price and convert to a number, default to a very high number if not present
-    const priceStr = params.get('price') || '9999999';
-    const price = parseFloat(priceStr);
-    console.log("Params:", { price });
+    let query = supabase.from('phoneplans').select('*');
 
-    // Start building the Supabase query
-    let query = supabase
-        .from('laptops') // Your table name
-        .select('*')
-        .lte('price', price); // Filter by price
+    if (networks.length && !networks.includes('any')) {
+        query = query.in('Network', networks);
+    }
+    if (sizes.length) {
+        query = query.in('Data', sizes);
+    }
 
-    // Apply filters for each boolean column if present in URL parameters
-    BOOLEAN_COLUMNS.forEach(columnName => {
-        // Check if the column name is present in the URL parameters and its value is 'true'
-        if (params.get(columnName) === 'true') {
-            query = query.eq(columnName, true); // Add an equality filter
-            console.log(`Applying filter: ${columnName} = true`);
-        }
-    });
-
-    // Execute the Supabase query
     let { data, error } = await query;
-    console.log("Raw Supabase data:", data, "Error:", error);
 
-    // Handle errors from Supabase
-    if (error) {
-        console.error("Supabase error:", error);
-        document.getElementById('results').innerText = 'Error loading products.';
-        return;
-    }
-
-    // Handle no data found
-    if (!data || data.length === 0) {
-        document.getElementById('results').innerHTML = '<p style="color: red; font-weight: bold;">No products found matching your criteria.</p>';
-        return;
-    }
-
-    console.log("Data count after filtering:", data.length);
-
-    // Generate HTML for the results
-    const resultsHtml = data.map(p => {
-        // Dynamically build the features list for display
-        const displayedFeatures = [];
-        BOOLEAN_COLUMNS.forEach(columnName => {
-            // If the laptop has this feature (boolean column is true), add it to the list
-            if (p[columnName] === true) {
-                // Format the column name for display (e.g., "95%+ 5 Star Reviews" to "95%+ 5 Star Reviews")
-                displayedFeatures.push(columnName);
-            }
+    // Filter by price (Monthly Price is a string like "$0")
+    if (!isNaN(price)) {
+        data = data.filter(plan => {
+            const planPrice = parseFloat((plan['Monthly Price'] || '').replace(/[^0-9.]/g, ''));
+            return !isNaN(planPrice) && planPrice <= price;
         });
+    }
 
-        return `
-            <div class="product" style="color: orange; margin-bottom: 15px; border: 1px solid #444; border-radius: 10px; padding: 10px;">
-                <h2>${p.name}</h2>
-                <img src="${p.image_url}" alt="${p.name}" style="max-width:200px; max-height:150px; display:block; margin:0 auto 10px;">
-                <p><strong>Price:</strong> $${p.price}</p>
-                <p id="features"><strong>Features:</strong> ${displayedFeatures.length > 0 ? displayedFeatures.join(', ') : 'None specified'}</p>
-                <a id="buy" href="${p.link}" target="_blank" style="color: black; padding-bottom: 10px;">Buy</a>
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = '';
+
+    if (error) {
+        resultsDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+        return;
+    }
+    if (!data || data.length === 0) {
+        resultsDiv.innerHTML = '<p style="color:orange;">No matching phone plans found.</p>';
+        return;
+    }
+
+    data.forEach(plan => {
+        resultsDiv.innerHTML += `
+            <div style="background:#333;padding:15px;margin:10px 0;border-radius:10px;color:orange;">
+                <strong>${plan['Carrier Name'] || ''} - ${plan['Plan Name'] || ''}</strong><br>
+                Network: ${plan['Network'] || ''}<br>
+                Data: ${plan['Data'] || ''}<br>
+                Monthly Price: ${plan['Monthly Price'] || ''}<br>
+                ${plan['Notes'] ? `<em>${plan['Notes']}</em><br>` : ''}
             </div>
         `;
-    }).join('');
-
-    // Display the results
-    document.getElementById('results').innerHTML = resultsHtml;
+    });
 }
 
-// Call the getRecommendations function when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', getRecommendations);
-
+window.onload = fetchPlans;
 </script>
+
 </body>
 </html>
