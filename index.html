@@ -76,6 +76,28 @@
        font-size: 16px;
        font-weight: bold;
    }
+       #code {
+       position: fixed;
+       bottom: 20px;
+       left: 20px;
+       background: rgba(44, 62, 80, 0.95);
+       color: orange;
+       padding: 12px 20px;
+       border-radius: 8px;
+       font-size: 16px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+       z-index: 1000;
+   }
+   #code:hover {
+       background: rgba(44, 63, 80, 1);
+       padding: 12px 20px;
+       transform: scale(1.05);
+       transition:cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.1s;
+       color: orange;
+       text-decoration-color: red;
+       font-size: 16px;
+       font-weight: bold;
+   }
 
 </style>
 </head>
@@ -87,7 +109,11 @@
     For help email help@waxnflaxn.xyz
   </a>
 </div>
-
+<div id="code">
+  <a href="https://github.com/waxn/recommendation" target="_blank" style="color: orange; text-decoration: underline;">
+    View Source Code
+  </a>
+</div>
 <div id="options">
 <a href="phones.html" id="phones">Phones</a><br>
 <a href="laptops.html" id="laptops">Laptops</a><br>
