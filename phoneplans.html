@@ -280,10 +280,7 @@
     const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    // To read from the phones table:
-    const { data: phones, error: phonesError } = await supabase
-        .from('phones')
-        .select('*');
+    
 
     const form = document.getElementById('rec-form');
 form.addEventListener('submit', function(e) {

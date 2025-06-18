@@ -172,7 +172,7 @@ async function getRecommendations() {
 
     // Start building the Supabase query
     let query = supabase
-        .from('laptops') // Your table name
+        .from('phones') // Your table name
         .select('*')
         .lte('price', price); // Filter by price
 
