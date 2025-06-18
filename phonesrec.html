@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="icon" sizes="240x240" href="recommendation-favicon.png">
+  <title>Laptop Recommendations</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: darkslategray;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 5%;
+    }
+    #results {
+      color: orange;
+      padding: 20px;
+      border-radius: 10px;
+      background-color: #333;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      color: orange;
+      padding: 10px;
+      padding-bottom: 30px;
+      font-weight: bold;
+      font-size: 50px;
+    }
+    .product {
+      margin-bottom: 20px;
+      border: 1px solid #444;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: #222;
+      height: 110%;
+    }
+    #buy {
+      color: black;
+      text-decoration: none;
+      padding: 10px 20px;
+      background-color: orange;
+      border-radius: 5px;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    #buy:hover {
+      background-color: darkorange;
+      font-size: 18px;
+    }
+    #features {
+      color: orange;
+      padding: 18px 0;
+    }
+    #help-message {
+       position: fixed;
+       bottom: 20px;
+       right: 20px;
+       background: rgba(44, 62, 80, 0.95);
+       color: orange;
+       padding: 12px 20px;
+       border-radius: 8px;
+       font-size: 16px;
+       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+       z-index: 1000;
+   }
+    #help-message:hover {
+       background: rgba(44, 63, 80, 1);
+       padding: 12px 20px;
+       transform: scale(1.05);
+       transition:cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.1s;
+       color: orange;
+       text-decoration-color: red;
+       font-size: 16px;
+       font-weight: bold;
+   }
+
+
+
+  </style>
+</head>
+<body>
+  <h1>Laptop Recommendations</h1>
+  <div id="results">Loading...</div>
+  <div id="help-message">
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: orange; text-decoration: underline;">
+    For help email help@waxnflaxn.xyz
+  </a>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  // This script fetches laptop recommendations from Supabase based on URL parameters
+// and displays them on the results page.
+
+console.log("Results Script loaded!");
+
+// Supabase configuration (ensure these are correct for your project)
+const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+// Initialize Supabase client
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// List of all boolean feature/size columns from your CSV
+const BOOLEAN_COLUMNS = [
+    "OLED",
+    "95%+ 5 Star Reviews",
+    "small",
+    "14 inch",
+    "15 inch",
+    "16 inch",
+    "huge",
+    "Long Battery Life",
+    "Backlit Keyboard",
+    "High Refresh Rate",
+    "Full Keyboard",
+    "Touchscreen",
+    "Fingerprint Reader",
+    "gaming"
+];
+
+// Asynchronous function to get laptop recommendations
+async function getRecommendations() {
+    // Get URL parameters
+    const params = new URLSearchParams(window.location.search);
+
+    // Get price and convert to a number, default to a very high number if not present
+    const priceStr = params.get('price') || '9999999';
+    const price = parseFloat(priceStr);
+    console.log("Params:", { price });
+
+    // Start building the Supabase query
+    let query = supabase
+        .from('laptops') // Your table name
+        .select('*')
+        .lte('price', price); // Filter by price
+
+    // Apply filters for each boolean column if present in URL parameters
+    BOOLEAN_COLUMNS.forEach(columnName => {
+        // Check if the column name is present in the URL parameters and its value is 'true'
+        if (params.get(columnName) === 'true') {
+            query = query.eq(columnName, true); // Add an equality filter
+            console.log(`Applying filter: ${columnName} = true`);
+        }
+    });
+
+    // Execute the Supabase query
+    let { data, error } = await query;
+    console.log("Raw Supabase data:", data, "Error:", error);
+
+    // Handle errors from Supabase
+    if (error) {
+        console.error("Supabase error:", error);
+        document.getElementById('results').innerText = 'Error loading products.';
+        return;
+    }
+
+    // Handle no data found
+    if (!data || data.length === 0) {
+        document.getElementById('results').innerHTML = '<p style="color: red; font-weight: bold;">No products found matching your criteria.</p>';
+        return;
+    }
+
+    console.log("Data count after filtering:", data.length);
+
+    // Generate HTML for the results
+    const resultsHtml = data.map(p => {
+        // Dynamically build the features list for display
+        const displayedFeatures = [];
+        BOOLEAN_COLUMNS.forEach(columnName => {
+            // If the laptop has this feature (boolean column is true), add it to the list
+            if (p[columnName] === true) {
+                // Format the column name for display (e.g., "95%+ 5 Star Reviews" to "95%+ 5 Star Reviews")
+                displayedFeatures.push(columnName);
+            }
+        });
+
+        return `
+            <div class="product" style="color: orange; margin-bottom: 15px; border: 1px solid #444; border-radius: 10px; padding: 10px;">
+                <h2>${p.name}</h2>
+                <img src="${p.image_url}" alt="${p.name}" style="max-width:200px; max-height:150px; display:block; margin:0 auto 10px;">
+                <p><strong>Price:</strong> $${p.price}</p>
+                <p id="features"><strong>Features:</strong> ${displayedFeatures.length > 0 ? displayedFeatures.join(', ') : 'None specified'}</p>
+                <a id="buy" href="${p.link}" target="_blank" style="color: black; padding-bottom: 10px;">Buy</a>
+            </div>
+        `;
+    }).join('');
+
+    // Display the results
+    document.getElementById('results').innerHTML = resultsHtml;
+}
+
+// Call the getRecommendations function when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', getRecommendations);
+
+</script>
+</body>
+</html>
