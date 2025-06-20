@@ -142,57 +142,65 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function fetchPlans() {
-    const params = new URLSearchParams(window.location.search);
-    const price = parseFloat(params.get('price'));
-    const networks = params.getAll('network');
-    const sizes = params.getAll('size');
+        async function fetchPhonePlans() {
+            const { data: phoneplans, error } = await supabase
+                .from('phoneplans')
+                .select('*');
 
-    let query = supabase.from('phoneplans').select('*');
+            if (error) {
+                console.error('Error fetching data:', error);
+                return [];
+            }
+            return phoneplans;
+        }
 
-    if (networks.length && !networks.includes('any')) {
-        query = query.in('Network', networks);
-    }
-    if (sizes.length) {
-        query = query.in('Data', sizes);
-    }
+        // Function to filter data based on URL parameters
+        function filterData(phonePlans, filters) {
+            return phonePlans.filter(plan => {
+                return Object.keys(filters).every(key => {
+                    if (!filters[key]) return true;
+                    return String(plan[key]).toLowerCase().includes(filters[key].toLowerCase());
+                });
+            });
+        }
 
-    let { data, error } = await query;
+        // Function to display data in the DOM
+        function displayData(phonePlans) {
+            const container = document.getElementById('phonePlansContainer');
+            container.innerHTML = '';
 
-    // Filter by price (Monthly Price is a string like "$0")
-    if (!isNaN(price)) {
-        data = data.filter(plan => {
-            const planPrice = parseFloat((plan['Monthly Price'] || '').replace(/[^0-9.]/g, ''));
-            return !isNaN(planPrice) && planPrice <= price;
-        });
-    }
+            phonePlans.forEach(plan => {
+                const planElement = document.createElement('div');
+                planElement.className = 'phone-plan';
+                planElement.innerHTML = `
+                    <h3>${plan['Carrier Name']} - ${plan['Plan Name']}</h3>
+                    <p>Monthly Price: $${plan['Monthly Price']}</p>
+                    <p>6 Month Price: $${plan['6 Month Price']}</p>
+                    <p>Yearly Price: $${plan['Yearly Price']}</p>
+                    <p>Data: ${plan['Data']}</p>
+                    <p>Network: ${plan['Network']}</p>
+                    <p>Notes: ${plan['Notes']}</p>
+                `;
+                container.appendChild(planElement);
+            });
+        }
 
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = '';
+        // Parse URL parameters and fetch data
+        async function loadData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const filters = {
+                'Carrier Name': urlParams.get('carrier'),
+                'Plan Name': urlParams.get('plan'),
+                'Network': urlParams.get('network'),
+            };
 
-    if (error) {
-        resultsDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
-        return;
-    }
-    if (!data || data.length === 0) {
-        resultsDiv.innerHTML = '<p style="color:orange;">No matching phone plans found.</p>';
-        return;
-    }
+            const phonePlans = await fetchPhonePlans();
+            const filteredData = filterData(phonePlans, filters);
+            displayData(filteredData);
+        }
 
-    data.forEach(plan => {
-        resultsDiv.innerHTML += `
-            <div style="background:#333;padding:15px;margin:10px 0;border-radius:10px;color:orange;">
-                <strong>${plan['Carrier Name'] || ''} - ${plan['Plan Name'] || ''}</strong><br>
-                Network: ${plan['Network'] || ''}<br>
-                Data: ${plan['Data'] || ''}<br>
-                Monthly Price: ${plan['Monthly Price'] || ''}<br>
-                ${plan['Notes'] ? `<em>${plan['Notes']}</em><br>` : ''}
-            </div>
-        `;
-    });
-}
-
-window.onload = fetchPlans;
+        // Load data when the page loads
+        loadData();
 </script>
 
 </body>
