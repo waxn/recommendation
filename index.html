@@ -16,25 +16,28 @@
         background-color: rgb(15,15,15);
         font-family: Arial, sans-serif;
         text-align: center;
-        padding: 50px;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        box-sizing: border-box;
         position: relative;
     }
     h1 {
-        color: orange;
+        color: #FC4C02;
         font-weight: bold;
         font-size: 50px;
         padding-top: 20px;
         padding-bottom: 40px;
     }
     p {
-        color: orange;
+        color: #FC4C02;
     }
     #help-message {
        position: fixed;
        bottom: 20px;
        right: 20px;
        background: rgba(44, 62, 80, 0.95);
-       color: orange;
+       color: #FC4C02;
        padding: 12px 20px;
        border-radius: 8px;
        font-size: 16px;
@@ -46,7 +49,7 @@
        padding: 12px 20px;
        transform: scale(1.05);
        transition:cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.1s;
-       color: orange;
+       color: #FC4C02;
        text-decoration-color: red;
        font-size: 16px;
        font-weight: bold;
@@ -58,7 +61,7 @@
        transform: translateX(-50%);
    }
    #code:hover {
-       color: orange;
+       color: #FC4C02;
        text-decoration: underline;
        font-weight: bold;
        transition: color 0.2s ease, text-decoration 0.2s ease;
@@ -68,7 +71,7 @@
        bottom: 1%;
        left: 50%;
        transform: translateX(-50%);
-       color: orange;
+       color: #FC4C02;
        font-size: 14px;
        text-align: center;
    }
@@ -86,7 +89,7 @@
        top: 5px;
        transform: translateX(-50%);
        left: 50%;
-       color: orange;
+       color: #FC4C02;
        font-size: 14px;
        text-align: center;
    }
@@ -94,14 +97,14 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 1fr 1fr;
-        gap: 20px;
-        width: 90vw;
-        height: 90vh;
+        gap: 32px;
+        width: 100vw;
+        height: calc(100vh - 120px);
         box-sizing: border-box;
-        padding: 20px;
+        padding: 32px;
    }
    #phones, #laptops, #phoneplans, #pcparts {
-       color: orange;
+       color: #FC4C02;
        font-size: 24px;
        font-weight: bold;
        text-decoration: none;
@@ -119,25 +122,22 @@
        height: auto;
        margin-bottom: 10px;
    }
-   #phonesimg, #laptopsimg, #phoneplansimg, #pcpartsimg {
-       width: 100%;
-       height: auto;
-       display: block;
-       margin: 0 auto 10px;
-       transition: transform 0.2s ease;
-   }
-   #box {
+   .box img {
+        max-width: 80%;
+        max-height: 60%;
+        object-fit: contain;
+        margin-bottom: 16px;
+        border-radius: 8px;
+        background: #222;
+    }
+   .box {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 2vw;
         overflow: hidden;
-        color: orange;
-        font-size: 30px;
-        font-weight: bold;
-        text-decoration: none;
-        text-align: center;
-        border-style: solid;
+        min-width: 0;
+        min-height: 0;
         border-radius: 5px;
         border-color:rgba(44, 62, 80, 0.95);
         padding: 10px;
@@ -145,25 +145,36 @@
         transition: background-color 2s ease, font-size 0.1s ease;
         margin-bottom: 5%;
     }
-   #box:hover {
+   .box:hover {
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 2vw;
         overflow: hidden;
     }
+    .box h2, .box button {
+        margin: 0;
+        padding: 12px 24px;
+        font-size: 1.2rem;
+        background: none;
+        border: none;
+        color: #FC4C02;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        transition: background-color 0.3s ease, color 0.3s ease;}
 </style>
 </head>
 <body>
 
 <h1>Click the Product Category you Want to Buy</h1>
 <div id="help-message">
-  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: orange; text-decoration: underline;">
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: #FC4C02; text-decoration: underline;">
     For help email help@waxnflaxn.xyz
   </a>
 </div>
 <div id="code">
-  <a href="https://github.com/waxn/recommendation" target="_blank" style="color: orange; text-decoration: underline;">
+  <a href="https://github.com/waxn/recommendation" target="_blank" style="color: #FC4C02; text-decoration: underline;">
     View Source Code
   </a>
 </div>
@@ -171,28 +182,28 @@
   <p>&copy; 2025 Linus Thoreson</p>
 </div>
 <div id="logo">
-<a href="index.html" style="color: orange; text-decoration: none;">
+<a href="index.html" style="color: #FC4C02; text-decoration: none;">
   <img id="logo" src="recommendation-favicon.png" alt="Logo" style="width: 50px; height: auto;">
 </a>
 </div>
 <div id="terms">
-    <p>By using this site, you agree to my <a href="terms.html" target="_blank" style="color: orange; text-decoration: underline;">Terms of Service</a>.</p>
+    <p>By using this site, you agree to my <a href="terms.html" target="_blank" style="color: #FC4C02; text-decoration: underline;">Terms of Service</a>.</p>
 </div>
 
 <div id="grid-container">
-    <div id="box">
+    <div class="box">
         <img id="phonesimg" src="https://i.postimg.cc/DwDTR5ZF/image.png" alt="Phones Icon"><br>
         <a href="phones.html" id="phones">Phones</a>
     </div>
-    <div id="box">
+    <div class="box">
         <img id="laptopsimg" src="https://i.postimg.cc/0yMk5rbp/notebook-dell-pro-pc14250-hd-fhd-bk-gallery-2.png" alt="Laptops Icon"><br>
         <a href="laptops.html" id="laptops">Laptops</a>
     </div>
-    <div id="box">
+    <div class="box">
         <img id="phoneplansimg" src="https://i.postimg.cc/QMNw0y10/craiyon-125143-image.png" alt="Phone Plans Icon"><br>
         <a href="phoneplans.html" id="phoneplans">Phone Plans</a>
     </div>
-    <div id="box">
+    <div class="box">
         <img id="pcpartsimg" src="https://i.postimg.cc/qvBH5qds/craiyon-130328-image.png" alt="PC Parts Icon"><br>
         <a href="pcparts.html" id="pcparts">PC Parts</a>
     </div>
