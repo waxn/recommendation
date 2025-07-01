@@ -160,6 +160,14 @@ const BOOLEAN_COLUMNS = [
     "gaming"
 ];
 
+const SIZE_COLUMNS = [
+    "small",
+    "14 inch",
+    "15 inch",
+    "16 inch",
+    "huge"
+];
+
 // Asynchronous function to get laptop recommendations
 async function getRecommendations() {
     // Get URL parameters
@@ -168,20 +176,42 @@ async function getRecommendations() {
     // Get price and convert to a number, default to a very high number if not present
     const priceStr = params.get('price') || '9999999';
     const price = parseFloat(priceStr);
-    console.log("Params:", { price });
 
-    // Start building the Supabase query
-    let query = supabase
-        .from('laptops') // Your table name
-        .select('*')
-        .lte('price', price); // Filter by price
+    // Build filter object
+    let filters = { };
+    filters['price'] = { lte: price };
 
-    // Apply filters for each boolean column if present in URL parameters
-    BOOLEAN_COLUMNS.forEach(columnName => {
-        // Check if the column name is present in the URL parameters and its value is 'true'
+    // Handle size columns: only allow laptops with the selected size(s) true, and all others false
+    const selectedSizes = SIZE_COLUMNS.filter(size => params.get(size) === 'true');
+    if (selectedSizes.length > 0) {
+        SIZE_COLUMNS.forEach(size => {
+            filters[size] = selectedSizes.includes(size);
+        });
+    }
+
+    // Handle other boolean columns
+    BOOLEAN_COLUMNS.filter(col => !SIZE_COLUMNS.includes(col)).forEach(columnName => {
         if (params.get(columnName) === 'true') {
-            query = query.eq(columnName, true); // Add an equality filter
-            console.log(`Applying filter: ${columnName} = true`);
+            filters[columnName] = true;
+        }
+    });
+
+    // Build Supabase query
+    let query = supabase.from('laptops').select('*');
+    // Price filter
+    query = query.lte('price', price);
+
+    // Apply size filters
+    if (selectedSizes.length > 0) {
+        SIZE_COLUMNS.forEach(size => {
+            query = query.eq(size, selectedSizes.includes(size));
+        });
+    }
+
+    // Apply other boolean filters
+    BOOLEAN_COLUMNS.filter(col => !SIZE_COLUMNS.includes(col)).forEach(columnName => {
+        if (params.get(columnName) === 'true') {
+            query = query.eq(columnName, true);
         }
     });
 

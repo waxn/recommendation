@@ -192,16 +192,23 @@
 
     <div id="sizes">
         <p id="sizetext">Size</p>
-      <label><input id="fourteen" type="checkbox" name="size" value="14 Inch">14 Inch</label><br>
-      <label><input id="fifteen" type="checkbox" name="size" value="15 Inch">15 Inch</label><br>
-      <label><input id="sixteen" type="checkbox" name="size" value="16 Inch">16 Inch</label><br>
+        <label><input id="small" type="checkbox" name="small" value="true">Small</label><br>  
+        <label><input id="fourteen" type="checkbox" name="14 inch" value="true">14 Inch</label><br>
+        <label><input id="fifteen" type="checkbox" name="15 inch" value="true">15 Inch</label><br>
+        <label><input id="sixteen" type="checkbox" name="16 inch" value="true">16 Inch</label><br>
+        <label><input id="huge" type="checkbox" name="huge" value="true">Huge</label><br>
     </div>
 
     <div id="featurescheckboxes">
       <p id="featurestext">Features (Choose Any)</p>
-      <label><input id="c1" type="checkbox" name="features" value="Touchscreen">Touchscreen</label><br>
-      <label><input type="checkbox" name="features" value="Backlit Keyboard">Backlit Keyboard</label><br>
-      <label><input type="checkbox" name="features" value="Fingerprint Reader">Fingerprint Reader</label><br>
+      <label><input id="c1" type="checkbox" name="Touchscreen" value="true">Touchscreen</label><br>
+      <label><input type="checkbox" name="Backlit Keyboard" value="true">Backlit Keyboard</label><br>
+      <label><input type="checkbox" name="Fingerprint Reader" value="Fingerprint Reader">Fingerprint Reader</label><br>
+      <label><input type="checkbox" name="OLED" value="true">OLED</label><br>
+      <label><input type="checkbox" name="Long Battery Life" value="true">Long Battery Life</label><br>
+      <label><input type="checkbox" name="High Refresh Rate" value="true">High Refresh Rate</label><br>
+      <label><input type="checkbox" name="Full Keyboard" value="true">Full Keyboard</label><br>
+      <label><input type="checkbox" name="gaming" value="true">Gaming</label><br>
     </div>
     
     <button type="submit" id="submit">Submit</button>
@@ -258,7 +265,7 @@ const BOOLEAN_COLUMNS = [
 ];
 
 // Add an event listener to the form submission
-  document.getElementById('rec-form').addEventListener('submit', function(e) {
+document.getElementById('rec-form').addEventListener('submit', function(e) {
     e.preventDefault(); // Prevent the default form submission
 
     // Get the price input value
@@ -271,8 +278,6 @@ const BOOLEAN_COLUMNS = [
     // Iterate through all defined boolean columns
     BOOLEAN_COLUMNS.forEach(columnName => {
         // Find the checkbox associated with this column name
-        // It's assumed your checkboxes have `name` attributes matching the column names
-        // For example: <input type="checkbox" name="OLED" value="true">
         const checkbox = document.querySelector(`input[name="${columnName}"]:checked`);
         if (checkbox) {
             // If the checkbox is checked, add it to the URL parameters with a value of 'true'
@@ -282,7 +287,7 @@ const BOOLEAN_COLUMNS = [
 
     // Redirect to the results page with the constructed URL parameters
     window.location.href = `laptopsrec.html?${params.toString()}`;
-  });
+});
 
   </script>
 </body>
