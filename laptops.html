@@ -5,27 +5,30 @@
   <link rel="icon" sizes="240x240" href="recommendation-favicon.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-        * {
+    * {
         margin: 0;
         padding: 0;
-        box-sizing: none;
+        box-sizing: border-box; 
     }
     body {
-        background-color: darkslategray;
+        background-color: rgb(15,15,15);
         font-family: Arial, sans-serif;
         text-align: center;
-        padding: 5%;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        box-sizing: border-box;
+        position: relative;
     }
     h1 {
-        color: orange;
-        padding: 10px;
-        padding-bottom: 30px;
+        color: #FC4C02;
         font-weight: bold;
         font-size: 50px;
+        padding-top: 20px;
+        padding-bottom: 40px;
     }
     p {
-        color: orange;
-        padding-bottom: 25px;
+        color: #FC4C02;
     }
     #submit {
         display: inline-block;
@@ -34,23 +37,23 @@
         font-size: 23px;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-weight: bold;
-        color: darkslategray;
-        background-color: orange;
+        color: rgb(15,15,15);
+        background-color: #FC4C02;
         text-decoration: none;
         border-radius: 10px;
     }
     #submit:hover {
-        background-color: darkorange;
+        background-color: #FC4C02;
         font-size: 25px;
     }
     #prices {
-        background-color: darkslategray;
+        background-color: rgb(15,15,15);
         padding: 20px;
         border-radius: 20px;
         box-shadow: 0 0 5px rgba(45, 0, 0, 0.5);
     }
     #pricetitle {
-        color: orange;
+        color: #FC4C02;
         font-size: 20px;
         font-weight: bold;
         position: center;
@@ -58,14 +61,14 @@
         padding-bottom: 5px;
     }
     #pricedescription {
-        color: orange;
+        color: #FC4C02;
         font-size: 15px;
         font-weight: normal;
         padding-top: 5px;
         padding-bottom: 10px;
     }
     #sizetext {
-        color: orange;
+        color: #FC4C02;
         font-size: 20px;
         font-weight: bold;
         padding-top: 10px;
@@ -78,30 +81,30 @@
         padding-top: 15px;
         border: 5px solid #444;
         border-radius: 15px;
-        background-color: #275050;
+        background-color: rgb(15,15,15);
         box-shadow: 0 0 15px rgba(0,0,0,0.3);
     }
     #form-container:hover {
-        background-color: darkslategray;
+        background-color: rgb(15,15,15);
         padding: 22px;
         padding-top: 17px;
         box-shadow: 0 0 17px rgba(45, 0, 0, 0.5)
     }
     #featurestext {
-        color: orange;
+        color: #FC4C02;
         font-size: 20px;
         font-weight: bold;
         padding-top: 15px;
     }
     #p1 {
-        color: orange;
+        color: #FC4C02;
         font-size: 20px;
         width: 30%;
         height: 25%;
         padding: 0px;
         font-weight: bold;
         padding-top: 15px;
-        background-color: darkslategray;
+        background-color: rgb(15,15,15);
         border-radius: 10px;
         border-color: slategray;
         border-width: 5px;
@@ -118,12 +121,12 @@
     #featurescheckboxes {
         text-align: center;
         padding: 10px;
-        background-color: darkslategray;
+        background-color: rgb(15,15,15);
         padding-left: 20px;
         padding-top: 0px;
     }
     #featurestext {
-        color: orange;
+        color: #FC4C02;
         font-size: 20px;
         font-weight: bold;
         padding-top: 15px;
@@ -134,7 +137,7 @@
        bottom: 20px;
        right: 20px;
        background: rgba(44, 62, 80, 0.95);
-       color: orange;
+       color: #FC4C02;
        padding: 12px 20px;
        border-radius: 8px;
        font-size: 16px;
@@ -146,7 +149,7 @@
        padding: 12px 20px;
        transform: scale(1.05);
        transition:cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.1s;
-       color: orange;
+       color: #FC4C02;
        text-decoration-color: red;
        font-size: 16px;
        font-weight: bold;
@@ -156,7 +159,7 @@
        bottom: 5px;
        left: 50%;
        transform: translateX(-50%);
-       color: orange;
+       color: #FC4C02;
        font-size: 14px;
        text-align: center;
    }
@@ -174,7 +177,7 @@
        top: 5px;
        transform: translateX(-50%);
        left: 50%;
-       color: orange;
+       color: #FC4C02;
        font-size: 14px;
        text-align: center;
    }
@@ -215,7 +218,7 @@
   </form>
 </div>
 <div id="help-message">
-  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: orange; text-decoration: underline;">
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: #FC4C02; text-decoration: underline;">
     For help email help@waxnflaxn.xyz
   </a>
 </div>
@@ -223,12 +226,12 @@
   <p>&copy; 2025 Linus Thoreson</p>
 </div>
 <div id="logo">
-<a href="index.html" style="color: orange; text-decoration: none;">
+<a href="index.html" style="color: #FC4C02; text-decoration: none;">
   <img src="recommendation-favicon.png" alt="Logo" style="width: 50px; height: auto;">
 </a>
 </div>
 <div id="terms">
-    <p>By using this site, you agree to my <a href="terms.html" target="_blank" style="color: orange; text-decoration: underline;">Terms of Service</a>.</p>
+    <p>By using this site, you agree to my <a href="terms.html" target="_blank" style="color: #FC4C02; text-decoration: underline;">Terms of Service</a>.</p>
 </div>
 
 <div id="results"></div>
