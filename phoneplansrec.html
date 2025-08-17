@@ -104,11 +104,29 @@
        font-size: 14px;
        text-align: center;
    }
+   .debug-info {
+       background-color: rgba(46, 46, 46, 0.8);
+       border: 1px solid #FC4C02;
+       border-radius: 8px;
+       padding: 15px;
+       margin: 20px 0;
+       text-align: left;
+       font-family: monospace;
+       font-size: 12px;
+       color: #FC4C02;
+   }
   </style>
 </head>
 <body>
   <h1>Phone Plan Recommendations</h1>
   <div id="results">Loading...</div>
+  
+  <!-- Debug information display -->
+  <div id="debug-info" class="debug-info" style="display: none;">
+    <h3>Debug Information:</h3>
+    <div id="debug-content"></div>
+  </div>
+  
   <div id="help-message">
   <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: #FC4C02; text-decoration: underline;">
     For help email help@waxnflaxn.xyz
@@ -136,75 +154,174 @@ console.log("Phone Plan Results Script loaded!");
 // Supabase configuration
 const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+
 // Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Possible table names to try
+const POSSIBLE_TABLE_NAMES = ['phoneplans', 'phone_plans', 'phoneplans', 'plans', 'phone_plans'];
+
+// Function to show debug information
+function showDebugInfo(info) {
+    const debugDiv = document.getElementById('debug-info');
+    const debugContent = document.getElementById('debug-content');
+    debugContent.innerHTML = info;
+    debugDiv.style.display = 'block';
+}
+
+// Function to try different table names
+async function tryDifferentTables() {
+    console.log("Trying different table names...");
+    
+    for (const tableName of POSSIBLE_TABLE_NAMES) {
+        try {
+            console.log(`Trying table: ${tableName}`);
+            const { data, error } = await supabase.from(tableName).select('*').limit(1);
+            
+            if (!error && data && data.length > 0) {
+                console.log(`Found working table: ${tableName}`);
+                console.log("Sample data:", data[0]);
+                return tableName;
+            }
+        } catch (err) {
+            console.log(`Table ${tableName} failed:`, err.message);
+        }
+    }
+    
+    return null;
+}
+
 // Asynchronous function to get phone plan recommendations
 async function getRecommendations() {
-    // Get URL parameters
-    const params = new URLSearchParams(window.location.search);
-
-    // Get price and convert to a number, default to a very high number if not present
-    const priceStr = params.get('price') || '9999999';
-    const price = parseFloat(priceStr);
-    const network = params.get('network');
-    const data = params.get('data');
-    
-    console.log("Params:", { price, network, data });
-
-    // Start building the Supabase query
-    let query = supabase
-        .from('phoneplans') // Your table name
-        .select('*')
-        .lte('price', price); // Filter by price
-
-    // Apply network filter if present
-    if (network && network !== 'any') {
-        query = query.eq('network', network);
-        console.log(`Applying network filter: ${network}`);
+    try {
+        // Get URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const priceStr = params.get('price') || '9999999';
+        const price = parseFloat(priceStr);
+        const network = params.get('network');
+        const data = params.get('data');
+        
+        console.log("URL Parameters:", { price, network, data });
+        
+        // Try to find the correct table name
+        let workingTable = await tryDifferentTables();
+        
+        if (!workingTable) {
+            const errorMsg = 'Could not find phone plans table. Available tables might be: ' + POSSIBLE_TABLE_NAMES.join(', ');
+            document.getElementById('results').innerHTML = `<p style="color: #FC4C02; font-weight: bold;">${errorMsg}</p>`;
+            
+            // Show debug info
+            showDebugInfo(`
+                <strong>Error:</strong> No working table found<br>
+                <strong>Tried tables:</strong> ${POSSIBLE_TABLE_NAMES.join(', ')}<br>
+                <strong>URL Parameters:</strong> ${params.toString()}<br>
+                <strong>Price:</strong> ${price}<br>
+                <strong>Network:</strong> ${network || 'None'}<br>
+                <strong>Data:</strong> ${data || 'None'}
+            `);
+            return;
+        }
+        
+        // Start building the Supabase query
+        let query = supabase
+            .from(workingTable)
+            .select('*');
+        
+        // Apply price filter if present
+        if (price && price < 9999999) {
+            query = query.lte('price', price);
+            console.log(`Applying price filter: <= $${price}`);
+        }
+        
+        // Apply network filter if present
+        if (network && network !== 'any') {
+            query = query.eq('network', network);
+            console.log(`Applying network filter: ${network}`);
+        }
+        
+        // Apply data filter if present
+        if (data) {
+            query = query.eq('data', data);
+            console.log(`Applying data filter: ${data}`);
+        }
+        
+        // Execute the Supabase query
+        console.log("Executing query...");
+        let { data: results, error } = await query;
+        
+        console.log("Raw Supabase response:", { results, error });
+        
+        // Handle errors from Supabase
+        if (error) {
+            console.error("Supabase error:", error);
+            document.getElementById('results').innerHTML = `<p style="color: #FC4C02; font-weight: bold;">Error loading phone plans: ${error.message}</p>`;
+            
+            showDebugInfo(`
+                <strong>Supabase Error:</strong> ${error.message}<br>
+                <strong>Table used:</strong> ${workingTable}<br>
+                <strong>Query details:</strong> Price: ${price}, Network: ${network}, Data: ${data}
+            `);
+            return;
+        }
+        
+        // Handle no data found
+        if (!results || results.length === 0) {
+            document.getElementById('results').innerHTML = '<p style="color: #FC4C02; font-weight: bold;">No phone plans found matching your criteria.</p>';
+            
+            showDebugInfo(`
+                <strong>No Results Found</strong><br>
+                <strong>Table used:</strong> ${workingTable}<br>
+                <strong>Filters applied:</strong> Price: ${price}, Network: ${network}, Data: ${data}<br>
+                <strong>Total records in table:</strong> ${results ? results.length : 0}
+            `);
+            return;
+        }
+        
+        console.log(`Found ${results.length} phone plans`);
+        
+        // Generate HTML for the results
+        const resultsHtml = results.map(plan => {
+            // Try to find the best field names for display
+            const planName = plan.name || plan.plan_name || plan['Plan Name'] || plan.carrier || 'Phone Plan';
+            const planPrice = plan.price || plan.monthly_price || plan['Monthly Price'] || 'Price not specified';
+            const planNetwork = plan.network || plan.carrier || plan['Network'] || 'Network not specified';
+            const planData = plan.data || plan['Data'] || 'Data not specified';
+            const planDescription = plan.description || plan.notes || plan['Notes'] || '';
+            const planLink = plan.link || plan.url || plan['Link'] || '';
+            
+            return `
+                <div class="product" style="color: #FC4C02; margin-bottom: 15px; border: 1px solid rgba(44, 62, 80, 0.95); border-radius: 10px; padding: 10px;">
+                    <h2>${planName}</h2>
+                    <p><strong>Price:</strong> $${planPrice}/month</p>
+                    <p><strong>Network:</strong> ${planNetwork}</p>
+                    <p><strong>Data:</strong> ${planData}</p>
+                    ${planDescription ? `<p><strong>Description:</strong> ${planDescription}</p>` : ''}
+                    ${planLink ? `<a id="buy" href="${planLink}" target="_blank" style="color: black; padding-bottom: 10px;">View Plan</a>` : ''}
+                </div>
+            `;
+        }).join('');
+        
+        // Display the results
+        document.getElementById('results').innerHTML = resultsHtml;
+        
+        // Show success debug info
+        showDebugInfo(`
+            <strong>Success!</strong><br>
+            <strong>Table used:</strong> ${workingTable}<br>
+            <strong>Results found:</strong> ${results.length}<br>
+            <strong>Filters applied:</strong> Price: ${price}, Network: ${network}, Data: ${data}<br>
+            <strong>Sample data structure:</strong> ${JSON.stringify(results[0], null, 2)}
+        `);
+        
+    } catch (err) {
+        console.error("Unexpected error:", err);
+        document.getElementById('results').innerHTML = `<p style="color: #FC4C02; font-weight: bold;">Unexpected error: ${err.message}</p>`;
+        
+        showDebugInfo(`
+            <strong>Unexpected Error:</strong> ${err.message}<br>
+            <strong>Stack trace:</strong> ${err.stack}
+        `);
     }
-
-    // Apply data filter if present
-    if (data) {
-        query = query.eq('data', data);
-        console.log(`Applying data filter: ${data}`);
-    }
-
-    // Execute the Supabase query
-    let { data: results, error } = await query;
-    console.log("Raw Supabase data:", results, "Error:", error);
-
-    // Handle errors from Supabase
-    if (error) {
-        console.error("Supabase error:", error);
-        document.getElementById('results').innerText = 'Error loading phone plans.';
-        return;
-    }
-
-    // Handle no data found
-    if (!results || results.length === 0) {
-        document.getElementById('results').innerHTML = '<p style="color: #FC4C02; font-weight: bold;">No phone plans found matching your criteria.</p>';
-        return;
-    }
-
-    console.log("Data count after filtering:", results.length);
-
-    // Generate HTML for the results
-    const resultsHtml = results.map(plan => {
-        return `
-            <div class="product" style="color: #FC4C02; margin-bottom: 15px; border: 1px solid rgba(44, 62, 80, 0.95); border-radius: 10px; padding: 10px;">
-                <h2>${plan.name || 'Phone Plan'}</h2>
-                <p><strong>Price:</strong> $${plan.price}/month</p>
-                <p><strong>Network:</strong> ${plan.network || 'Not specified'}</p>
-                <p><strong>Data:</strong> ${plan.data || 'Not specified'}</p>
-                ${plan.description ? `<p><strong>Description:</strong> ${plan.description}</p>` : ''}
-                ${plan.link ? `<a id="buy" href="${plan.link}" target="_blank" style="color: black; padding-bottom: 10px;">View Plan</a>` : ''}
-            </div>
-        `;
-    }).join('');
-
-    // Display the results
-    document.getElementById('results').innerHTML = resultsHtml;
 }
 
 // Call the getRecommendations function when the DOM is fully loaded

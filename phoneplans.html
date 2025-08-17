@@ -240,6 +240,20 @@
        font-size: 14px;
        text-align: center;
    }
+   .debug-output {
+       background-color: rgba(46, 46, 46, 0.8);
+       border: 1px solid #FC4C02;
+       border-radius: 8px;
+       padding: 15px;
+       margin: 20px 0;
+       text-align: left;
+       font-family: monospace;
+       font-size: 12px;
+       color: #FC4C02;
+       max-width: 600px;
+       margin-left: auto;
+       margin-right: auto;
+   }
   </style>
 </head>
 
@@ -267,26 +281,32 @@
     <input type="number" id="pricebox" name="price" placeholder="Enter max monthly price" required>
 
     <div id="prefnetwork">
-        <p id="prefnetworktext">Network</p>
+        <p id="prefnetworktext">Network (Choose One)</p>
         <div id="prefnetworkcheckboxes">
-          <label><input id="Verizon" type="checkbox" name="network" value="Verizon">Verizon</label>
-          <label><input id="AT&T" type="checkbox" name="network" value="AT&T">AT&T</label>
-          <label><input id="T-Mobile" type="checkbox" name="network" value="T-Mobile">T-Mobile</label>
-          <label><input id="any" type="checkbox" name="network" value="any">Any</label>
+          <label><input type="radio" name="network" value="Verizon">Verizon</label>
+          <label><input type="radio" name="network" value="AT&T">AT&T</label>
+          <label><input type="radio" name="network" value="T-Mobile">T-Mobile</label>
+          <label><input type="radio" name="network" value="any">Any</label>
       </div>
     </div>
 
     <div id="data">
-        <p id="datatext">Data</p>
-        <label><input type="checkbox" name="data" value="1GB">1GB</label>
-        <label><input type="checkbox" name="data" value="5GB">5GB</label>
-        <label><input type="checkbox" name="data" value="10GB">10GB</label>
-        <label><input type="checkbox" name="data" value="Unlimited">Unlimited</label>
+        <p id="datatext">Data (Choose One)</p>
+        <label><input type="radio" name="data" value="1GB">1GB</label>
+        <label><input type="radio" name="data" value="5GB">5GB</label>
+        <label><input type="radio" name="data" value="10GB">10GB</label>
+        <label><input type="radio" name="data" value="Unlimited">Unlimited</label>
     </div>
 
     
     <button type="submit" id="submit">Submit</button>
   </form>
+</div>
+
+<!-- Debug output -->
+<div id="debug-output" class="debug-output" style="display: none;">
+  <h3>Form Debug Info:</h3>
+  <div id="debug-content"></div>
 </div>
 
     <script>
@@ -297,6 +317,14 @@
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Function to show debug info
+        function showDebugInfo(info) {
+            const debugDiv = document.getElementById('debug-output');
+            const debugContent = document.getElementById('debug-content');
+            debugContent.innerHTML = info;
+            debugDiv.style.display = 'block';
+        }
+
         // Add form submission event listener
         document.getElementById('rec-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -306,14 +334,39 @@
             const network = document.querySelector('input[name="network"]:checked')?.value;
             const data = document.querySelector('input[name="data"]:checked')?.value;
             
+            console.log("Form submitted with:", { price, network, data });
+            
+            // Show debug info
+            showDebugInfo(`
+                <strong>Form Data Collected:</strong><br>
+                <strong>Price:</strong> $${price}/month<br>
+                <strong>Network:</strong> ${network || 'None selected'}<br>
+                <strong>Data:</strong> ${data || 'None selected'}<br>
+                <br>
+                <strong>Redirecting to:</strong> phoneplansrec.html?${new URLSearchParams({price, network, data}).toString()}
+            `);
+            
             // Build URL parameters
             const params = new URLSearchParams();
             if (price) params.set('price', price);
             if (network) params.set('network', network);
             if (data) params.set('data', data);
             
-            // Redirect to results page
-            window.location.href = `phoneplansrec.html?${params.toString()}`;
+            // Small delay to show debug info, then redirect
+            setTimeout(() => {
+                window.location.href = `phoneplansrec.html?${params.toString()}`;
+            }, 2000);
+        });
+
+        // Add real-time debug info as user interacts with form
+        document.addEventListener('change', function(e) {
+            if (e.target.name === 'price' || e.target.name === 'network' || e.target.name === 'data') {
+                const price = document.querySelector('input[name="price"]').value;
+                const network = document.querySelector('input[name="network"]:checked')?.value;
+                const data = document.querySelector('input[name="data"]:checked')?.value;
+                
+                console.log("Form updated:", { price, network, data });
+            }
         });
     </script>
 
