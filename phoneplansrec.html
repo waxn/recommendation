@@ -158,9 +158,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Possible table names to try
-const POSSIBLE_TABLE_NAMES = ['phoneplans', 'phone_plans', 'phoneplans', 'plans', 'phone_plans'];
-
 // Function to show debug information
 function showDebugInfo(info) {
     const debugDiv = document.getElementById('debug-info');
@@ -169,26 +166,12 @@ function showDebugInfo(info) {
     debugDiv.style.display = 'block';
 }
 
-// Function to try different table names
-async function tryDifferentTables() {
-    console.log("Trying different table names...");
-    
-    for (const tableName of POSSIBLE_TABLE_NAMES) {
-        try {
-            console.log(`Trying table: ${tableName}`);
-            const { data, error } = await supabase.from(tableName).select('*').limit(1);
-            
-            if (!error && data && data.length > 0) {
-                console.log(`Found working table: ${tableName}`);
-                console.log("Sample data:", data[0]);
-                return tableName;
-            }
-        } catch (err) {
-            console.log(`Table ${tableName} failed:`, err.message);
-        }
-    }
-    
-    return null;
+// Function to extract numeric price from text (removes $ and converts to number)
+function extractPrice(priceText) {
+    if (!priceText) return 0;
+    // Remove $ and any other non-numeric characters, then convert to number
+    const numericPrice = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+    return isNaN(numericPrice) ? 0 : numericPrice;
 }
 
 // Asynchronous function to get phone plan recommendations
@@ -197,106 +180,87 @@ async function getRecommendations() {
         // Get URL parameters
         const params = new URLSearchParams(window.location.search);
         const priceStr = params.get('price') || '9999999';
-        const price = parseFloat(priceStr);
+        const maxPrice = parseFloat(priceStr);
         const network = params.get('network');
         const data = params.get('data');
         
-        console.log("URL Parameters:", { price, network, data });
+        console.log("URL Parameters:", { maxPrice, network, data });
         
-        // Try to find the correct table name
-        let workingTable = await tryDifferentTables();
-        
-        if (!workingTable) {
-            const errorMsg = 'Could not find phone plans table. Available tables might be: ' + POSSIBLE_TABLE_NAMES.join(', ');
-            document.getElementById('results').innerHTML = `<p style="color: #FC4C02; font-weight: bold;">${errorMsg}</p>`;
-            
-            // Show debug info
-            showDebugInfo(`
-                <strong>Error:</strong> No working table found<br>
-                <strong>Tried tables:</strong> ${POSSIBLE_TABLE_NAMES.join(', ')}<br>
-                <strong>URL Parameters:</strong> ${params.toString()}<br>
-                <strong>Price:</strong> ${price}<br>
-                <strong>Network:</strong> ${network || 'None'}<br>
-                <strong>Data:</strong> ${data || 'None'}
-            `);
-            return;
-        }
-        
-        // Start building the Supabase query
+        // Start building the Supabase query - use the exact table name from your schema
         let query = supabase
-            .from(workingTable)
+            .from('phoneplans')
             .select('*');
         
-        // Apply price filter if present
-        if (price && price < 9999999) {
-            query = query.lte('price', price);
-            console.log(`Applying price filter: <= $${price}`);
-        }
+        // Execute the query first to get all data
+        console.log("Fetching all phone plans...");
+        let { data: allPlans, error } = await query;
         
-        // Apply network filter if present
-        if (network && network !== 'any') {
-            query = query.eq('network', network);
-            console.log(`Applying network filter: ${network}`);
-        }
-        
-        // Apply data filter if present
-        if (data) {
-            query = query.eq('data', data);
-            console.log(`Applying data filter: ${data}`);
-        }
-        
-        // Execute the Supabase query
-        console.log("Executing query...");
-        let { data: results, error } = await query;
-        
-        console.log("Raw Supabase response:", { results, error });
-        
-        // Handle errors from Supabase
         if (error) {
             console.error("Supabase error:", error);
             document.getElementById('results').innerHTML = `<p style="color: #FC4C02; font-weight: bold;">Error loading phone plans: ${error.message}</p>`;
-            
-            showDebugInfo(`
-                <strong>Supabase Error:</strong> ${error.message}<br>
-                <strong>Table used:</strong> ${workingTable}<br>
-                <strong>Query details:</strong> Price: ${price}, Network: ${network}, Data: ${data}
-            `);
+            showDebugInfo(`<strong>Supabase Error:</strong> ${error.message}`);
             return;
         }
         
+        console.log(`Found ${allPlans.length} total phone plans`);
+        console.log("Sample plan:", allPlans[0]);
+        
+        // Filter the data in JavaScript since prices are text with $ signs
+        let filteredPlans = allPlans.filter(plan => {
+            // Extract monthly price from the "Monthly Price" field
+            const monthlyPrice = extractPrice(plan['Monthly Price']);
+            
+            // Price filter
+            if (maxPrice < 9999999 && monthlyPrice > maxPrice) {
+                return false;
+            }
+            
+            // Network filter
+            if (network && network !== 'any') {
+                // Check if the network matches (case-insensitive)
+                if (!plan['Network'] || plan['Network'].toLowerCase() !== network.toLowerCase()) {
+                    return false;
+                }
+            }
+            
+            // Data filter
+            if (data) {
+                // Check if the data matches (case-insensitive)
+                if (!plan['Data'] || plan['Data'].toLowerCase() !== data.toLowerCase()) {
+                    return false;
+                }
+            }
+            
+            return true;
+        });
+        
+        console.log(`Filtered to ${filteredPlans.length} plans`);
+        
         // Handle no data found
-        if (!results || results.length === 0) {
+        if (filteredPlans.length === 0) {
             document.getElementById('results').innerHTML = '<p style="color: #FC4C02; font-weight: bold;">No phone plans found matching your criteria.</p>';
             
             showDebugInfo(`
                 <strong>No Results Found</strong><br>
-                <strong>Table used:</strong> ${workingTable}<br>
-                <strong>Filters applied:</strong> Price: ${price}, Network: ${network}, Data: ${data}<br>
-                <strong>Total records in table:</strong> ${results ? results.length : 0}
+                <strong>Filters applied:</strong> Max Price: $${maxPrice}, Network: ${network || 'Any'}, Data: ${data || 'Any'}<br>
+                <strong>Total records in table:</strong> ${allPlans.length}<br>
+                <strong>Sample data structure:</strong> ${JSON.stringify(allPlans[0], null, 2)}
             `);
             return;
         }
         
-        console.log(`Found ${results.length} phone plans`);
-        
-        // Generate HTML for the results
-        const resultsHtml = results.map(plan => {
-            // Try to find the best field names for display
-            const planName = plan.name || plan.plan_name || plan['Plan Name'] || plan.carrier || 'Phone Plan';
-            const planPrice = plan.price || plan.monthly_price || plan['Monthly Price'] || 'Price not specified';
-            const planNetwork = plan.network || plan.carrier || plan['Network'] || 'Network not specified';
-            const planData = plan.data || plan['Data'] || 'Data not specified';
-            const planDescription = plan.description || plan.notes || plan['Notes'] || '';
-            const planLink = plan.link || plan.url || plan['Link'] || '';
-            
+        // Generate HTML for the results using the exact column names from your schema
+        const resultsHtml = filteredPlans.map(plan => {
             return `
                 <div class="product" style="color: #FC4C02; margin-bottom: 15px; border: 1px solid rgba(44, 62, 80, 0.95); border-radius: 10px; padding: 10px;">
-                    <h2>${planName}</h2>
-                    <p><strong>Price:</strong> $${planPrice}/month</p>
-                    <p><strong>Network:</strong> ${planNetwork}</p>
-                    <p><strong>Data:</strong> ${planData}</p>
-                    ${planDescription ? `<p><strong>Description:</strong> ${planDescription}</p>` : ''}
-                    ${planLink ? `<a id="buy" href="${planLink}" target="_blank" style="color: black; padding-bottom: 10px;">View Plan</a>` : ''}
+                    <h2>${plan['Carrier Name']} - ${plan['Plan Name']}</h2>
+                    <p><strong>Monthly Price:</strong> ${plan['Monthly Price']}</p>
+                    <p><strong>6 Month Price:</strong> ${plan['6 Month Price']}</p>
+                    <p><strong>Yearly Price:</strong> ${plan['Yearly Price']}</p>
+                    <p><strong>Network:</strong> ${plan['Network'] || 'Not specified'}</p>
+                    <p><strong>Data:</strong> ${plan['Data'] || 'Not specified'}</p>
+                    ${plan['Notes'] ? `<p><strong>Notes:</strong> ${plan['Notes']}</p>` : ''}
+                    ${plan['Recommended'] ? `<p><strong>⭐ Recommended Plan</strong></p>` : ''}
                 </div>
             `;
         }).join('');
@@ -307,10 +271,10 @@ async function getRecommendations() {
         // Show success debug info
         showDebugInfo(`
             <strong>Success!</strong><br>
-            <strong>Table used:</strong> ${workingTable}<br>
-            <strong>Results found:</strong> ${results.length}<br>
-            <strong>Filters applied:</strong> Price: ${price}, Network: ${network}, Data: ${data}<br>
-            <strong>Sample data structure:</strong> ${JSON.stringify(results[0], null, 2)}
+            <strong>Results found:</strong> ${filteredPlans.length}<br>
+            <strong>Filters applied:</strong> Max Price: $${maxPrice}, Network: ${network || 'Any'}, Data: ${data || 'Any'}<br>
+            <strong>Total records in table:</strong> ${allPlans.length}<br>
+            <strong>Sample data structure:</strong> ${JSON.stringify(filteredPlans[0], null, 2)}
         `);
         
     } catch (err) {
