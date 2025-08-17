@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<title>Tech Recommendations</title>
+<title>PC Parts - Coming Soon</title>
 <style>
     * {
         margin: 0;
@@ -13,28 +13,32 @@
         box-sizing: border-box; 
     }
     body {
-        background-color: darkslategray;
+        background-color: rgb(15,15,15);
         font-family: Arial, sans-serif;
         text-align: center;
-        padding: 50px;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        box-sizing: border-box;
         position: relative;
     }
     h1 {
-        color: orange;
+        color: #FC4C02;
         font-weight: bold;
         font-size: 50px;
         padding-top: 20px;
         padding-bottom: 40px;
     }
     p {
-        color: orange;
+        color: #FC4C02;
+        margin-bottom: 20px;
     }
     #help-message {
        position: fixed;
        bottom: 20px;
        right: 20px;
-       background: rgba(44, 62, 80, 0.95);
-       color: orange;
+       background: rgba(46, 46, 46, 0.2);
+       color: #FC4C02;
        padding: 12px 20px;
        border-radius: 8px;
        font-size: 16px;
@@ -42,11 +46,11 @@
        z-index: 1000;
    }
    #help-message:hover {
-       background: rgba(44, 63, 80, 1);
+       background: rgba(50, 50, 50, 0.3);
        padding: 12px 20px;
        transform: scale(1.05);
        transition:cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.1s;
-       color: orange;
+       color: #FC4C02;
        text-decoration-color: red;
        font-size: 16px;
        font-weight: bold;
@@ -55,8 +59,8 @@
        position: fixed;
        bottom: 20px;
        left: 20px;
-       background: rgba(44, 62, 80, 0.95);
-       color: orange;
+       background: rgba(46, 46, 46, 0.2);
+       color: #FC4C02;
        padding: 12px 20px;
        border-radius: 8px;
        font-size: 16px;
@@ -64,20 +68,21 @@
        z-index: 1000;
    }
    #code:hover {
-       background: rgba(44, 63, 80, 1);
+       background: rgba(50, 50, 50, 0.3);
        padding: 12px 20px;
        transform: scale(1.05);
        transition:cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.1s;
-       color: orange;
+       color: #FC4C02;
+       text-decoration-color: red;
        font-size: 16px;
        font-weight: bold;
    }
    #copyright {
        position: fixed;
-       bottom: 5px;
+       bottom: 1%;
        left: 50%;
        transform: translateX(-50%);
-       color: orange;
+       color: #FC4C02;
        font-size: 14px;
        text-align: center;
    }
@@ -95,20 +100,43 @@
        top: 5px;
        transform: translateX(-50%);
        left: 50%;
-       color: orange;
+       color: #FC4C02;
        font-size: 14px;
        text-align: center;
    }
-
+   .coming-soon {
+       background-color: rgba(46, 46, 46, 0.2);
+       border: 2px solid rgba(44, 62, 80, 0.95);
+       border-radius: 15px;
+       padding: 40px;
+       margin: 50px auto;
+       max-width: 600px;
+       box-shadow: 0 0 15px rgba(0,0,0,0.3);
+   }
+   .coming-soon:hover {
+       background-color: rgba(50, 50, 50, 0.3);
+       box-shadow: 0 0 20px rgba(45, 0, 0, 0.5);
+   }
+   .coming-soon img {
+       max-width: 300px;
+       height: auto;
+       margin: 20px auto;
+       display: block;
+       border-radius: 10px;
+   }
 </style>
 </head>
 <body>
 
-<h1>Sorry, this page is not available yet.</h1>
-<p>I are working hard to bring you the best tech recommendations. While I work on this, check out Laptops and Phoneplans. Please check back later!</p>
-<img src="https://httpstatusdogs.com/img/501.jpg" alt="501-not-implemented" style="width: auto; height: auto; position: relative; top: 20px;">
+<div class="coming-soon">
+    <h1>PC Parts Coming Soon!</h1>
+    <p>I'm working hard to bring you the best PC parts recommendations. While I work on this, check out our Laptops and Phone Plans sections!</p>
+    <p>Please check back later for amazing PC component suggestions.</p>
+    <img src="https://httpstatusdogs.com/img/501.jpg" alt="501-not-implemented">
+</div>
+
 <div id="help-message">
-  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: orange; text-decoration: underline;">
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: #FC4C02; text-decoration: underline;">
     For help email help@waxnflaxn.xyz
   </a>
 </div>
@@ -116,14 +144,13 @@
   <p>&copy; 2025 Linus Thoreson</p>
 </div>
 <div id="logo">
-<a href="index.html" style="color: orange; text-decoration: none;">
+<a href="index.html" style="color: #FC4C02; text-decoration: none;">
   <img src="recommendation-favicon.png" alt="Logo" style="width: 50px; height: auto;">
 </a>
 </div>
 <div id="terms">
-    <p>By using this site, you agree to my <a href="terms.html" target="_blank" style="color: orange; text-decoration: underline;">Terms of Service</a>.</p>
+    <p>By using this site, you agree to my <a href="terms.html" target="_blank" style="color: #FC4C02; text-decoration: underline;">Terms of Service</a>.</p>
 </div>
 
-<div>
 </body>
 </html>

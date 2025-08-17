@@ -10,20 +10,20 @@
       box-sizing: border-box;
     }
     body {
-      background-color: darkslategray;
+      background-color: rgb(15,15,15);
       font-family: Arial, sans-serif;
       text-align: center;
       padding: 5%;
     }
     #results {
-      color: orange;
+      color: #FC4C02;
       padding: 20px;
       border-radius: 10px;
-      background-color: #333;
+      background-color: rgba(46, 46, 46, 0.2);
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
     h1 {
-      color: orange;
+      color: #FC4C02;
       padding: 10px;
       padding-bottom: 30px;
       font-weight: bold;
@@ -31,36 +31,36 @@
     }
     .product {
       margin-bottom: 20px;
-      border: 1px solid #444;
+      border: 1px solid rgba(44, 62, 80, 0.95);
       border-radius: 10px;
       padding: 10px;
-      background-color: #222;
-      height: 110%;
+      background-color: rgba(46, 46, 46, 0.2);
+      height: auto;
     }
     #buy {
       color: black;
       text-decoration: none;
       padding: 10px 20px;
-      background-color: orange;
+      background-color: #FC4C02;
       border-radius: 5px;
       padding-bottom: 4px;
       margin-bottom: 10px;
       font-weight: bold;
     }
     #buy:hover {
-      background-color: darkorange;
+      background-color: #FC4C02;
       font-size: 18px;
     }
     #features {
-      color: orange;
+      color: #FC4C02;
       padding: 18px 0;
     }
     #help-message {
        position: fixed;
        bottom: 20px;
        right: 20px;
-       background: rgba(44, 62, 80, 0.95);
-       color: orange;
+       background: rgba(46, 46, 46, 0.2);
+       color: #FC4C02;
        padding: 12px 20px;
        border-radius: 8px;
        font-size: 16px;
@@ -68,21 +68,21 @@
        z-index: 1000;
    }
     #help-message:hover {
-       background: rgba(44, 63, 80, 1);
+       background: rgba(50, 50, 50, 0.3);
        padding: 12px 20px;
        transform: scale(1.05);
        transition:cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.1s;
-       color: orange;
+       color: #FC4C02;
        text-decoration-color: red;
        font-size: 16px;
        font-weight: bold;
    }
    #copyright {
        position: fixed;
-       bottom: 5px;
+       bottom: 1%;
        left: 50%;
        transform: translateX(-50%);
-       color: orange;
+       color: #FC4C02;
        font-size: 14px;
        text-align: center;
    }
@@ -100,20 +100,17 @@
        top: 5px;
        transform: translateX(-50%);
        left: 50%;
-       color: orange;
+       color: #FC4C02;
        font-size: 14px;
        text-align: center;
    }
-
-
-
   </style>
 </head>
 <body>
   <h1>Phone Plan Recommendations</h1>
   <div id="results">Loading...</div>
   <div id="help-message">
-  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: orange; text-decoration: underline;">
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: #FC4C02; text-decoration: underline;">
     For help email help@waxnflaxn.xyz
   </a>
 </div>
@@ -121,87 +118,97 @@
   <p>&copy; 2025 Linus Thoreson</p>
 </div>
 <div id="logo">
-<a href="index.html" style="color: orange; text-decoration: none;">
+<a href="index.html" style="color: #FC4C02; text-decoration: none;">
   <img src="recommendation-favicon.png" alt="Logo" style="width: 50px; height: auto;">
 </a>
 </div>
 <div id="terms">
-    <p>By using this site, you agree to my <a href="terms.html" target="_blank" style="color: orange; text-decoration: underline;">Terms of Service</a>.</p>
+    <p>By using this site, you agree to my <a href="terms.html" target="_blank" style="color: #FC4C02; text-decoration: underline;">Terms of Service</a>.</p>
 </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // This script fetches laptop recommendations from Supabase based on URL parameters
+  // This script fetches phone plan recommendations from Supabase based on URL parameters
 // and displays them on the results page.
 
-console.log("Results Script loaded!");
+console.log("Phone Plan Results Script loaded!");
 
-// Supabase configuration (ensure these are correct for your project)
+// Supabase configuration
 const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
 // Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function fetchPhonePlans() {
-            const { data: phoneplans, error } = await supabase
-                .from('phoneplans')
-                .select('*');
+// Asynchronous function to get phone plan recommendations
+async function getRecommendations() {
+    // Get URL parameters
+    const params = new URLSearchParams(window.location.search);
 
-            if (error) {
-                console.error('Error fetching data:', error);
-                return [];
-            }
-            return phoneplans;
-        }
+    // Get price and convert to a number, default to a very high number if not present
+    const priceStr = params.get('price') || '9999999';
+    const price = parseFloat(priceStr);
+    const network = params.get('network');
+    const data = params.get('data');
+    
+    console.log("Params:", { price, network, data });
 
-        // Function to filter data based on URL parameters
-        function filterData(phonePlans, filters) {
-            return phonePlans.filter(plan => {
-                return Object.keys(filters).every(key => {
-                    if (!filters[key]) return true;
-                    return String(plan[key]).toLowerCase().includes(filters[key].toLowerCase());
-                });
-            });
-        }
+    // Start building the Supabase query
+    let query = supabase
+        .from('phoneplans') // Your table name
+        .select('*')
+        .lte('price', price); // Filter by price
 
-        // Function to display data in the DOM
-        function displayData(phonePlans) {
-            const container = document.getElementById('phonePlansContainer');
-            container.innerHTML = '';
+    // Apply network filter if present
+    if (network && network !== 'any') {
+        query = query.eq('network', network);
+        console.log(`Applying network filter: ${network}`);
+    }
 
-            phonePlans.forEach(plan => {
-                const planElement = document.createElement('div');
-                planElement.className = 'phone-plan';
-                planElement.innerHTML = `
-                    <h3>${plan['Carrier Name']} - ${plan['Plan Name']}</h3>
-                    <p>Monthly Price: $${plan['Monthly Price']}</p>
-                    <p>6 Month Price: $${plan['6 Month Price']}</p>
-                    <p>Yearly Price: $${plan['Yearly Price']}</p>
-                    <p>Data: ${plan['Data']}</p>
-                    <p>Network: ${plan['Network']}</p>
-                    <p>Notes: ${plan['Notes']}</p>
-                `;
-                container.appendChild(planElement);
-            });
-        }
+    // Apply data filter if present
+    if (data) {
+        query = query.eq('data', data);
+        console.log(`Applying data filter: ${data}`);
+    }
 
-        // Parse URL parameters and fetch data
-        async function loadData() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const filters = {
-                'Carrier Name': urlParams.get('carrier'),
-                'Plan Name': urlParams.get('plan'),
-                'Network': urlParams.get('network'),
-            };
+    // Execute the Supabase query
+    let { data: results, error } = await query;
+    console.log("Raw Supabase data:", results, "Error:", error);
 
-            const phonePlans = await fetchPhonePlans();
-            const filteredData = filterData(phonePlans, filters);
-            displayData(filteredData);
-        }
+    // Handle errors from Supabase
+    if (error) {
+        console.error("Supabase error:", error);
+        document.getElementById('results').innerText = 'Error loading phone plans.';
+        return;
+    }
 
-        // Load data when the page loads
-        loadData();
+    // Handle no data found
+    if (!results || results.length === 0) {
+        document.getElementById('results').innerHTML = '<p style="color: #FC4C02; font-weight: bold;">No phone plans found matching your criteria.</p>';
+        return;
+    }
+
+    console.log("Data count after filtering:", results.length);
+
+    // Generate HTML for the results
+    const resultsHtml = results.map(plan => {
+        return `
+            <div class="product" style="color: #FC4C02; margin-bottom: 15px; border: 1px solid rgba(44, 62, 80, 0.95); border-radius: 10px; padding: 10px;">
+                <h2>${plan.name || 'Phone Plan'}</h2>
+                <p><strong>Price:</strong> $${plan.price}/month</p>
+                <p><strong>Network:</strong> ${plan.network || 'Not specified'}</p>
+                <p><strong>Data:</strong> ${plan.data || 'Not specified'}</p>
+                ${plan.description ? `<p><strong>Description:</strong> ${plan.description}</p>` : ''}
+                ${plan.link ? `<a id="buy" href="${plan.link}" target="_blank" style="color: black; padding-bottom: 10px;">View Plan</a>` : ''}
+            </div>
+        `;
+    }).join('');
+
+    // Display the results
+    document.getElementById('results').innerHTML = resultsHtml;
+}
+
+// Call the getRecommendations function when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', getRecommendations);
 </script>
-
 </body>
 </html>
