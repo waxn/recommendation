@@ -104,11 +104,29 @@
        font-size: 14px;
        text-align: center;
    }
+   .debug-info {
+       background-color: rgba(46, 46, 46, 0.8);
+       border: 1px solid #FC4C02;
+       border-radius: 8px;
+       padding: 15px;
+       margin: 20px 0;
+       text-align: left;
+       font-family: monospace;
+       font-size: 12px;
+       color: #FC4C02;
+   }
   </style>
 </head>
 <body>
   <h1>Phone Recommendations</h1>
   <div id="results">Loading...</div>
+  
+  <!-- Debug information display -->
+  <div id="debug-info" class="debug-info" style="display: none;">
+    <h3>Debug Information:</h3>
+    <div id="debug-content"></div>
+  </div>
+  
   <div id="help-message">
   <a href="https://mail.google.com/mail/?view=cm&fs=1&to=help@waxnflaxn.xyz" target="_blank" style="color: #FC4C02; text-decoration: underline;">
     For help email help@waxnflaxn.xyz
@@ -131,18 +149,19 @@
   // This script fetches phone recommendations from Supabase based on URL parameters
 // and displays them on the results page.
 
-console.log("Results Script loaded!");
+console.log("Phone Results Script loaded!");
 
-// Supabase configuration (ensure these are correct for your project)
+// Supabase configuration
 const SUPABASE_URL = 'https://cqtzjzggrllclhaxxjpy.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxdHpqemdncmxsY2xoYXh4anB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTM4MjAsImV4cCI6MjA2MzY4OTgyMH0.R0NjWKx4TTurzJ3K-FRrNUGYGvNV_-lHY_m25M8J1S0';
+
 // Initialize Supabase client
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// List of all boolean feature/size columns from your CSV
+// List of all boolean feature/size columns - using exact column names from database
 const BOOLEAN_COLUMNS = [
     "Triple Camera",
-    "Sattelite Connectivity Capable",
+    "Satellite Connectivity",
     "OLED",
     "95%+ 5 Star Reviews",
     "Small",
@@ -151,75 +170,122 @@ const BOOLEAN_COLUMNS = [
     "Wireless Charging"
 ];
 
+// Function to show debug information
+function showDebugInfo(info) {
+    const debugDiv = document.getElementById('debug-info');
+    const debugContent = document.getElementById('debug-content');
+    debugContent.innerHTML = info;
+    debugDiv.style.display = 'block';
+}
+
 // Asynchronous function to get phone recommendations
 async function getRecommendations() {
-    // Get URL parameters
-    const params = new URLSearchParams(window.location.search);
-
-    // Get price and convert to a number, default to a very high number if not present
-    const priceStr = params.get('price') || '9999999';
-    const price = parseFloat(priceStr);
-    console.log("Params:", { price });
-
-    // Start building the Supabase query
-    let query = supabase
-        .from('phones') // Your table name
-        .select('*')
-        .lte('price', price); // Filter by price
-
-    // Apply filters for each boolean column if present in URL parameters
-    BOOLEAN_COLUMNS.forEach(columnName => {
-        // Check if the column name is present in the URL parameters and its value is 'true'
-        if (params.get(columnName) === 'true') {
-            query = query.eq(columnName, true); // Add an equality filter
-            console.log(`Applying filter: ${columnName} = true`);
+    try {
+        // Get URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const priceStr = params.get('price') || '9999999';
+        const maxPrice = parseFloat(priceStr);
+        
+        console.log("URL Parameters:", { maxPrice });
+        console.log("All URL params:", Object.fromEntries(params.entries()));
+        
+        // Start building the Supabase query
+        let query = supabase
+            .from('phones')
+            .select('*');
+        
+        // Apply price filter
+        if (maxPrice < 9999999) {
+            query = query.lte('Price', maxPrice);
+            console.log(`Applying price filter: <= $${maxPrice}`);
         }
-    });
-
-    // Execute the Supabase query
-    let { data, error } = await query;
-    console.log("Raw Supabase data:", data, "Error:", error);
-
-    // Handle errors from Supabase
-    if (error) {
-        console.error("Supabase error:", error);
-        document.getElementById('results').innerText = 'Error loading products.';
-        return;
-    }
-
-    // Handle no data found
-    if (!data || data.length === 0) {
-        document.getElementById('results').innerHTML = '<p style="color: #FC4C02; font-weight: bold;">No products found matching your criteria.</p>';
-        return;
-    }
-
-    console.log("Data count after filtering:", data.length);
-
-    // Generate HTML for the results
-    const resultsHtml = data.map(p => {
-        // Dynamically build the features list for display
-        const displayedFeatures = [];
+        
+        // Apply boolean feature filters
         BOOLEAN_COLUMNS.forEach(columnName => {
-            // If the phone has this feature (boolean column is true), add it to the list
-            if (p[columnName] === true) {
-                // Format the column name for display
-                displayedFeatures.push(columnName);
+            if (params.get(columnName) === 'true') {
+                query = query.eq(columnName, true);
+                console.log(`Applying filter: ${columnName} = true`);
             }
         });
-
-        return `
-            <div class="product" style="color: #FC4C02; margin-bottom: 15px; border: 1px solid rgba(44, 62, 80, 0.95); border-radius: 10px; padding: 10px;">
-                <h2>${p.name}</h2>
-                <img src="${p.image_url}" alt="${p.name}" style="max-width:200px; max-height:150px; display:block; margin:0 auto 10px;">
-                <p><strong>Price:</strong> $${p.price}</p>
-                <p id="features"><strong>Features:</strong> ${displayedFeatures.length > 0 ? displayedFeatures.join(', ') : 'None specified'}</p>
-                <a id="buy" href="${p.link}" target="_blank" style="color: black; padding-bottom: 10px;">Buy</a>
-            </div>
-        `;
-    }).join('');
-
-    // Display the results
-    document.getElementById('results').innerHTML = resultsHtml;
+        
+        // Execute the Supabase query
+        console.log("Executing query...");
+        let { data: results, error } = await query;
+        
+        console.log("Raw Supabase response:", { results, error });
+        
+        // Handle errors from Supabase
+        if (error) {
+            console.error("Supabase error:", error);
+            document.getElementById('results').innerHTML = `<p style="color: #FC4C02; font-weight: bold;">Error loading phones: ${error.message}</p>`;
+            
+            showDebugInfo(`
+                <strong>Supabase Error:</strong> ${error.message}<br>
+                <strong>Query details:</strong> Max Price: $${maxPrice}<br>
+                <strong>Applied filters:</strong> ${BOOLEAN_COLUMNS.filter(col => params.get(col) === 'true').join(', ')}
+            `);
+            return;
+        }
+        
+        // Handle no data found
+        if (!results || results.length === 0) {
+            document.getElementById('results').innerHTML = '<p style="color: #FC4C02; font-weight: bold;">No phones found matching your criteria.</p>';
+            
+            showDebugInfo(`
+                <strong>No Results Found</strong><br>
+                <strong>Filters applied:</strong> Max Price: $${maxPrice}<br>
+                <strong>Applied filters:</strong> ${BOOLEAN_COLUMNS.filter(col => params.get(col) === 'true').join(', ')}<br>
+                <strong>Total records in table:</strong> ${results ? results.length : 0}
+            `);
+            return;
+        }
+        
+        console.log(`Found ${results.length} phones`);
+        
+        // Generate HTML for the results using the exact column names from your database
+        const resultsHtml = results.map(phone => {
+            // Dynamically build the features list for display
+            const displayedFeatures = [];
+            BOOLEAN_COLUMNS.forEach(columnName => {
+                // If the phone has this feature (boolean column is true), add it to the list
+                if (phone[columnName] === true) {
+                    displayedFeatures.push(columnName);
+                }
+            });
+            
+            return `
+                <div class="product" style="color: #FC4C02; margin-bottom: 15px; border: 1px solid rgba(44, 62, 80, 0.95); border-radius: 10px; padding: 10px;">
+                    <h2>${phone.name || 'Phone Name Not Available'}</h2>
+                    ${phone.image ? `<img src="${phone.image}" alt="${phone.name}" style="max-width:200px; max-height:150px; display:block; margin:0 auto 10px;">` : ''}
+                    <p><strong>Price:</strong> $${phone.Price || 'Price not available'}</p>
+                    <p id="features"><strong>Features:</strong> ${displayedFeatures.length > 0 ? displayedFeatures.join(', ') : 'None specified'}</p>
+                    ${phone.amazon ? `<a id="buy" href="${phone.amazon}" target="_blank" style="color: black; padding-bottom: 10px;">Buy on Amazon</a>` : ''}
+                </div>
+            `;
+        }).join('');
+        
+        // Display the results
+        document.getElementById('results').innerHTML = resultsHtml;
+        
+        // Show success debug info
+        showDebugInfo(`
+            <strong>Success!</strong><br>
+            <strong>Results found:</strong> ${results.length}<br>
+            <strong>Filters applied:</strong> Max Price: $${maxPrice}<br>
+            <strong>Applied filters:</strong> ${BOOLEAN_COLUMNS.filter(col => params.get(col) === 'true').join(', ')}<br>
+            <strong>Total records in table:</strong> ${results.length}<br>
+            <strong>Sample data structure:</strong> ${JSON.stringify(results[0], null, 2)}
+        `);
+        
+    } catch (err) {
+        console.error("Unexpected error:", err);
+        document.getElementById('results').innerHTML = `<p style="color: #FC4C02; font-weight: bold;">Unexpected error: ${err.message}</p>`;
+        
+        showDebugInfo(`
+            <strong>Unexpected Error:</strong> ${err.message}<br>
+            <strong>Stack trace:</strong> ${err.stack}
+        `);
+    }
 }
 
 // Call the getRecommendations function when the DOM is fully loaded

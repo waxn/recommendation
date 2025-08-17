@@ -180,42 +180,42 @@
     <div id="featurescheckboxes">
       <p id="featurestext">Features (Choose Any)</p>
         <label class="tooltip">
-        <input type="checkbox" name="features" value="Triple Camera">
+        <input type="checkbox" name="Triple Camera" value="true">
         Triple Camera
         <span class="tooltiptext">Phones with three rear cameras for better zoom and wide-angle shots.</span>
         </label>
         <label class="tooltip">
-            <input type="checkbox" name="features" value="Sattelite Connectivity Capable">
-             Satellite Connectivity Capable
+            <input type="checkbox" name="Satellite Connectivity" value="true">
+             Satellite Connectivity
             <span class="tooltiptext">Can connect to satellites for texting with compatible phone plan</span>
         </label>
         <label class="tooltip">
-            <input type="checkbox" name="features" value="OLED">
+            <input type="checkbox" name="OLED" value="true">
             OLED
             <span class="tooltiptext">A type of screen that turns pixels off when black, improving contrast and battery life (it really does make a difference)!</span>
         </label>
         <label class="tooltip">
-            <input type="checkbox" name="features" value="95%+ 5 Star Reviews">
+            <input type="checkbox" name="95%+ 5 Star Reviews" value="true">
             Well Reviewed
             <span class="tooltiptext">Phones with an average rating of 4.5+ stars</span>
         </label>
         <label class="tooltip">
-            <input type="checkbox" name="features" value="Small">
+            <input type="checkbox" name="Small" value="true">
             Small
             <span class="tooltiptext">Screen size under 6.5 inches diagonally</span>
         </label>
         <label class="tooltip">
-            <input type="checkbox" name="Large" value="Large">
+            <input type="checkbox" name="Large" value="true">
             Large
             <span class="tooltiptext">Screen size over 6.5 inches diagonally</span>
         </label>
         <label class="tooltip">
-            <input type="checkbox" name="features" value="Long Battery Life">
+            <input type="checkbox" name="Long Battery Life" value="true">
             Long Battery Life
             <span class="tooltiptext">Phones with a battery life of 15+ hours on average while streaming a video (according to the manufacturer)</span>
         </label>
         <label class="tooltip">
-            <input type="checkbox" name="features" value="Wireless Charging">
+            <input type="checkbox" name="Wireless Charging" value="true">
             Wireless Charging
             <span class="tooltiptext">Ability to charge wirelessly</span>
         </label>
@@ -252,10 +252,10 @@
 // Initialize Supabase client
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// List of all boolean feature/size columns from your CSV
+// List of all boolean feature/size columns from your CSV - using exact column names from database
 const BOOLEAN_COLUMNS = [
     "Triple Camera",
-    "Sattelite Connectivity Capable",
+    "Satellite Connectivity",
     "OLED",
     "95%+ 5 Star Reviews",
     "Small",
